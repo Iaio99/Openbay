@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "/home/giuliano/Documenti/Uni/Basi di Dati/Progetto/bin/pms"
+  "/home/giuliano/Documenti/Uni/Basi di Dati/Progetto/bin/pms.pdb"
+  "CMakeFiles/pms.dir/src/controller/addetto_comunale.c.o"
+  "CMakeFiles/pms.dir/src/controller/addetto_comunale.c.o.d"
+  "CMakeFiles/pms.dir/src/controller/login.c.o"
+  "CMakeFiles/pms.dir/src/controller/login.c.o.d"
+  "CMakeFiles/pms.dir/src/controller/piscina.c.o"
+  "CMakeFiles/pms.dir/src/controller/piscina.c.o.d"
+  "CMakeFiles/pms.dir/src/controller/teacher.c.o"
+  "CMakeFiles/pms.dir/src/controller/teacher.c.o.d"
+  "CMakeFiles/pms.dir/src/controller/user.c.o"
+  "CMakeFiles/pms.dir/src/controller/user.c.o.d"
+  "CMakeFiles/pms.dir/src/main.c.o"
+  "CMakeFiles/pms.dir/src/main.c.o.d"
+  "CMakeFiles/pms.dir/src/model/db.c.o"
+  "CMakeFiles/pms.dir/src/model/db.c.o.d"
+  "CMakeFiles/pms.dir/src/utils/db.c.o"
+  "CMakeFiles/pms.dir/src/utils/db.c.o.d"
+  "CMakeFiles/pms.dir/src/utils/dotenv.c.o"
+  "CMakeFiles/pms.dir/src/utils/dotenv.c.o.d"
+  "CMakeFiles/pms.dir/src/utils/io.c.o"
+  "CMakeFiles/pms.dir/src/utils/io.c.o.d"
+  "CMakeFiles/pms.dir/src/utils/validation.c.o"
+  "CMakeFiles/pms.dir/src/utils/validation.c.o.d"
+  "CMakeFiles/pms.dir/src/view/addetto_comunale.c.o"
+  "CMakeFiles/pms.dir/src/view/addetto_comunale.c.o.d"
+  "CMakeFiles/pms.dir/src/view/login.c.o"
+  "CMakeFiles/pms.dir/src/view/login.c.o.d"
+  "CMakeFiles/pms.dir/src/view/piscina.c.o"
+  "CMakeFiles/pms.dir/src/view/piscina.c.o.d"
+  "CMakeFiles/pms.dir/src/view/teacher.c.o"
+  "CMakeFiles/pms.dir/src/view/teacher.c.o.d"
+  "CMakeFiles/pms.dir/src/view/user.c.o"
+  "CMakeFiles/pms.dir/src/view/user.c.o.d"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/pms.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
