@@ -1,3 +1,0 @@
-/home/giuliano/Documenti/Uni/Basi di Dati/Progetto/New_Project/build/CMakeFiles/pms.dir
-/home/giuliano/Documenti/Uni/Basi di Dati/Progetto/New_Project/build/CMakeFiles/edit_cache.dir
-/home/giuliano/Documenti/Uni/Basi di Dati/Progetto/New_Project/build/CMakeFiles/rebuild_cache.dir
