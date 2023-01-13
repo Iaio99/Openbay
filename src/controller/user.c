@@ -6,7 +6,7 @@
 #include "../model/db.h"
 #include "../view/user.h"
 #include "../utils/io.h"
-
+/*
 static bool report_pool(void)
 {
 	pool_t *pool = do_view_pool();
@@ -28,7 +28,7 @@ static bool report_course(void)
 	}
 	return false;
 }
-
+*/
 
 static bool quit(void) {
 	return true;
@@ -39,8 +39,8 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-	{.action = REPORT_POOL, .control = report_pool},
-	{.action = REPORT_COURSE, .control = report_course},
+//	{.action = REPORT_POOL, .control = report_pool},
+//	{.action = REPORT_COURSE, .control = report_course},
 	{.action = QUIT, .control = quit}
 };
 

@@ -23,7 +23,7 @@ int get_user_action(void)
 	op = multi_choice("\033[;33mSelect an option\033[;0m", options, 3);
 	return op - '1';
 }
-
+/*
 void print_pool(pool_t *pool)
 {
 	clear_screen();
@@ -53,3 +53,4 @@ void print_course(course_t *course)
 			course->course[i].costo);
 	}
 }
+*/
