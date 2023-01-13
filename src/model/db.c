@@ -118,7 +118,7 @@ static bool initialize_prepared_stmts(role_t for_role)
 			}
 			break;
 		
-		case ADDETTO_COMUNALE:
+		case ADMIN:
 			if(!setup_prepared_stmt(&end_job, "call end_job(?)", conn)) {
 				print_stmt_error(view_pool, "Unable to initialize End Job statement\n");
 				return false;
@@ -133,57 +133,6 @@ static bool initialize_prepared_stmts(role_t for_role)
 			}
 			if(!setup_prepared_stmt(&update_manager, "call update_manager(?, ?)", conn)) {
 				print_stmt_error(update_manager, "Unable to initialize Update Manager statement\n");
-				return false;
-			}
-			break;
-
-		case PISCINA:
-			if(!setup_prepared_stmt(&add_user, "call add_user(?, ?, ?, ?)", conn)) {
-				print_stmt_error(add_user, "Unable to initialize Add User statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&add_contact, "call add_contact(?, ?)", conn)) {
-				print_stmt_error(add_contact, "Unable to initialize Add Contact statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&add_certificate, "call add_certificate(?, ?)", conn)) {
-				print_stmt_error(add_certificate, "Unable to initialize Add Certificate statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&add_course, "call add_course(?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(add_course, "Unable to initialize Add Course statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&add_subscription, "call add_subscription(?, ?, ?)", conn)) {
-				print_stmt_error(add_subscription, "Unable to initialize Add Subscription statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&remove_course, "call remove_course(?, ?)", conn)) {
-				print_stmt_error(remove_course, "Unable to initialize report statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&remove_subscription, "call remove_subscription(?, ?, ?)", conn)) {
-				print_stmt_error(remove_subscription, "Unable to initialize Remove Subscription statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&remove_user, "call report(?)", conn)) {
-				print_stmt_error(remove_user, "Unable to initialize report statement\n");
-				return false;
-			}
-			
-			if(!setup_prepared_stmt(&modify_lesson, "call modify_lesson(?, ?, ?, ?)", conn)) {
-				print_stmt_error(modify_lesson, "Unable to initialize Modify Lesson statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&update_last_visit, "call update_last_visit(?, ?)", conn)) {
-				print_stmt_error(update_last_visit, "Unable to initialize Update Last Visit statement\n");
-				return false;
-			}
-			break;
-
-		case INSEGNANTE:
-			if(!setup_prepared_stmt(&view_report, "call report(?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(view_report, "Unable to initialize Eeport statement\n");
 				return false;
 			}
 			break;
@@ -323,35 +272,7 @@ void db_switch_to_administrator(void)
 		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
-	if(!initialize_prepared_stmts(ADDETTO_COMUNALE)) {
-		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
-		exit(EXIT_FAILURE);
-	}
-}
-
-
-void db_switch_to_pool(void)
-{
-	close_prepared_stmts();
-	if(mysql_change_user(conn, getenv("PISCINA_USER"), getenv("PISCINA_PASS"), getenv("DB"))) {
-		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
-		exit(EXIT_FAILURE);
-	}
-	if(!initialize_prepared_stmts(PISCINA)) {
-		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
-		exit(EXIT_FAILURE);
-	}
-}
-
-
-void db_switch_to_teacher(void)
-{
-	close_prepared_stmts();
-	if(mysql_change_user(conn, getenv("INSEGNANTE_USER"), getenv("INSEGNANTE_PASS"), getenv("DB"))) {
-		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
-		exit(EXIT_FAILURE);
-	}
-	if(!initialize_prepared_stmts(INSEGNANTE)) {
+	if(!initialize_prepared_stmts(ADMIN)) {
 		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -371,7 +292,7 @@ void db_switch_to_user(void)
 	}
 }
 
-
+/*
 course_t *do_view_course(char nome_corso[NOME_LEN])
 {
 	int status;
@@ -425,7 +346,6 @@ course_t *do_view_course(char nome_corso[NOME_LEN])
 		goto out;
 	}
 
-	/* assemble course general information */
 	while (true) {
 		status = mysql_stmt_fetch(view_course);
 
@@ -512,7 +432,6 @@ pool_t *do_view_pool()
 	}
 
 
-	/* assemble pool general information */
 	while (true) {
 		status = mysql_stmt_fetch(view_pool);
 
@@ -597,7 +516,6 @@ report_t *do_view_report(cf_t insegnante, bool type)
 		goto out;
 	}
 
-	/* assemble report general information */
 	while (true) {
 		status = mysql_stmt_fetch(view_report);
 
@@ -1029,3 +947,4 @@ void do_update_manager(char nome_piscina[NOME_LEN], char nuovo_responsabile[NOME
 	mysql_stmt_reset(update_manager);
 	return;
 }
+*/
