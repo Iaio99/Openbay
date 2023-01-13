@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "addetto_comunale.h"
+#include "admin.h"
 #include "../utils/io.h"
 #include "../utils/validation.h"
 

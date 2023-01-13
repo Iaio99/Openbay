@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "addetto_comunale.h"
+#include "admin.h"
 #include "../model/db.h"
-#include "../view/addetto_comunale.h"
+#include "../view/admin.h"
 #include "../utils/io.h"
 
+/*
 static bool end_job(void)
 {
 	cf_t insegnante;
@@ -55,7 +56,7 @@ static bool update_manager(void)
 
     return false;
 }
-
+*/
 static bool quit(void) {
 	return true;
 }
@@ -65,10 +66,10 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-	{.action = JOB_END, .control = end_job},
-	{.action = JOB_NEW, .control = add_new_job},
-	{.action = TITLE_NEW, .control = add_title},
-	{.action = UPDATE_MANAGER, .control = update_manager},
+//	{.action = JOB_END, .control = end_job},
+//	{.action = JOB_NEW, .control = add_new_job},
+//	{.action = TITLE_NEW, .control = add_title},
+//	{.action = UPDATE_MANAGER, .control = update_manager},
 	{.action = QUIT, .control = quit}
 };
 

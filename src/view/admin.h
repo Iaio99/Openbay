@@ -2,10 +2,10 @@
 #include "../model/db.h"
 
 enum actions {
-	JOB_END,
-	JOB_NEW,
-	TITLE_NEW,
-	UPDATE_MANAGER,
+//	JOB_END,
+//	JOB_NEW,
+//	TITLE_NEW,
+//	UPDATE_MANAGER,
 	QUIT,
 	END_OF_ACTIONS
 };
