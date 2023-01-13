@@ -22,15 +22,11 @@ static bool validate_dotenv(void)
 	check_env_failing("DB");
 	check_env_failing("LOGIN_USER");
 	check_env_failing("LOGIN_PASS");
+	check_env_failing("USER_USER");
+	check_env_failing("USER_PASS");
 	check_env_failing("ADMIN_USER");
 	check_env_failing("ADMIN_PASS");
-	check_env_failing("PISCINA_USER");
-	check_env_failing("PISCINA_PASS");
-	check_env_failing("INSEGNANTE_USER");
-	check_env_failing("INSEGNANTE_PASS");
-	check_env_failing("ANONYMOUS_USER");
-	check_env_failing("ANONYMOUS_PASS");
-	
+
 	return ret;
 }
 #undef set_env_failing
