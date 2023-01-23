@@ -1,5 +1,0 @@
-Accorpando le entità asta e oggetto all’asta c’è un sensibile guadagno prestazionale sulle operazioni
-2) Eliminazione delle generalizzazioni
-Oggetti: Accorpamento nel padre con attributo “Stato”
-Offerte: Accorpamento nel padre
-Accorpamento Oggetti, Asta, Viene Messo e Offerte con Viene fatta. Unione dell’attributo stato e durata in Data Scadenza.
