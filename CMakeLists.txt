@@ -9,20 +9,16 @@ find_package(MySQL REQUIRED)
 
 add_executable(pms
         src/main.c
-	src/controller/addetto_comunale.c
         src/controller/login.c
-        src/controller/teacher.c
-        src/controller/piscina.c
+        src/controller/admin.c
 	src/controller/user.c
         src/model/db.c
         src/utils/db.c
         src/utils/dotenv.c
         src/utils/io.c
         src/utils/validation.c
-	src/view/addetto_comunale.c
-        src/view/piscina.c
         src/view/login.c
-        src/view/teacher.c
+        src/view/admin.c
 	src/view/user.c
 )
 
