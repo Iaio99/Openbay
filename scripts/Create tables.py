@@ -23,8 +23,11 @@ def create_insert_query(table_name: str, *args: value):
     print(f"VALUES ({', '.join(v[1] for v in args)})")
 
 
-column1 = ("Nome", "VARCHAR(16)", 1, 1, ())
-column2 = ("Cognome", "VARCHAR(16)", 1, 0, ())
+column1 = ("Codice", "CHAR(7)", 1, 1, ())
+column2 = ("Stato", "VARCHAR(32)", 1, 0, ())
+column3 = ("Dimensioni", "VARCHAR(32)", 1, 0, ())
+column4 = ("Descrizione", 
+column = ("Scadenza Asta", "DATETIME", 1, 0 ())
 
 v1 = ("Nome", "Giuliano")
 v2 = ("Cognome", "Vallone")
