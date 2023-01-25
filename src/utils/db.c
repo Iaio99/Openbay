@@ -7,8 +7,6 @@
 #include "db.h"
 #include "../model/db.h"
 
-//database utilities
-
 void print_stmt_error (MYSQL_STMT *stmt, char *message)
 {
 	fprintf (stderr, "%s\n", message);

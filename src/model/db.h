@@ -13,6 +13,7 @@
 #define CF_LEN 16
 
 typedef char cf_t[CF_LEN+1];
+typedef char code_t[8];
 
 typedef enum {
 	LOGIN_ROLE,
