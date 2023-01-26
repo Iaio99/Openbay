@@ -5,15 +5,19 @@
 #define DATE_LEN 11
 #define TIME_LEN 6
 #define DATETIME_LEN (DATE_LEN + TIME_LEN)
-#define USERNAME_LEN 64
+#define USERNAME_LEN 32
 #define PASSWORD_LEN 32
-#define NOME_LEN 64
-#define RESPONSABILE_LEN 64
-#define INDIRIZZO_LEN 64
+#define NOME_LEN 32
+#define ADDRESS_LEN 64
 #define CF_LEN 16
+#define CODE_LEN 7
+#define CREDIT_CARD_NUMBER_LEN 19
+#define LEVEL_LEN 32
+#define CITY_NAME_LEN 32
 
-typedef char cf_t[CF_LEN+1];
-typedef char code_t[8];
+typedef char cf_t[CF_LEN];
+typedef char code_t[CODE_LEN];
+typedef char credit_card_number_t[CREDIT_CARD_NUMBER_LEN];
 
 typedef enum {
 	LOGIN_ROLE,
@@ -26,6 +30,28 @@ typedef struct credentials {
 	char username[USERNAME_LEN];
 	char password[PASSWORD_LEN];
 }credentials_t;
+
+typedef struct credit_card {
+	char number[CREDIT_CARD_NUMBER_LEN];
+	cf_t accountholder;
+	unsigned short int CVV;
+	char expiration_date[DATE_LEN];
+}credit_card_t;
+
+typedef struct category {
+	char first_level[LEVEL_LEN];
+	char second_level[LEVEL_LEN];
+	char third_level[LEVEL_LEN];
+}category_t;
+
+typedef struct user {
+	cf_t cf;
+	char name[NOME_LEN];
+	char surname[NOME_LEN];
+	char address[ADDRESS_LEN];
+	char birthday[DATE_LEN];
+	char birthcity[CITY_NAME_LEN];
+}user_t;
 
 /*
 Return type of query example
