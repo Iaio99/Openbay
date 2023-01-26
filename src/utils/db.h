@@ -20,7 +20,7 @@
     type((x), MYSQL_BLOB): MYSQL_TYPE_BLOB \
 )
 
-typedef char[] MYSQL_BLOB;
+typedef char MYSQL_BLOB[];
 typedef MYSQL_TIME MYSQL_DATE;
 typedef MYSQL_TIME MYSQL_DATETIME;
 typedef MYSQL_TIME MYSQL_TIMESTAMP;
