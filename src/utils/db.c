@@ -73,13 +73,14 @@ void finish_with_stmt_error(MYSQL *conn, MYSQL_STMT *stmt, char *message, bool c
 }
 
 
-void set_binding_param(MYSQL_BIND *param, enum enum_field_types type, void *buffer, unsigned long len)
+void set_binding_param(MYSQL_BIND *param, enum enum_field_types type, void *buffer, unsigned long len, bool is_unsigned)
 {
 	memset(param, 0, sizeof(*param));
 
 	param->buffer_type = type;
 	param->buffer = buffer;
 	param->buffer_length = len;
+	param->is_unsigned = is_unsigned;
 }
 
 

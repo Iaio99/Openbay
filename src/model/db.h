@@ -33,7 +33,6 @@ typedef struct credentials {
 
 typedef struct credit_card {
 	char number[CREDIT_CARD_NUMBER_LEN];
-	cf_t account_holder;
 	unsigned short int CVV;
 	char expiration_date[DATE_LEN];
 }credit_card_t;
@@ -61,7 +60,7 @@ typedef struct object {
 	unsigned short int height;
 	char description[65535];
 	float start_price;
-	category_t category;
+	category_t *category;
 }object_t;
 
 struct asta_entry {
@@ -96,7 +95,10 @@ extern bool init_db(void);
 extern void fini_db(void);
 
 //Login operations
-extern role_t attempt_login(struct credentials *cred);
+extern role_t attempt_login(credentials_t *cred);
+void do_user_registration(user_t *user, credentials_t *credentials, credit_card_t *credit_card);
 extern void db_switch_to_login(void);
 extern void db_switch_to_user(void);
 extern void db_switch_to_administrator(void);
+void do_indici_asta(object_t *object, unsigned short int duration);
+void do_inserisci_categoria(category_t *category);

@@ -163,15 +163,15 @@ void fini_db(void)
 }
 
 
-role_t attempt_login(struct credentials *cred)
+role_t attempt_login(credentials_t *cred)
 {
 	MYSQL_BIND param[3]; // Used both for input and output
 	int role = 0;
 
 	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, cred->username, strlen(cred->username));
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, cred->password, strlen(cred->password));
-	set_binding_param(&param[2], MYSQL_TYPE_LONG, &role, sizeof(role));
+	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, cred->username, strlen(cred->username), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, cred->password, strlen(cred->password), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_LONG, &role, sizeof(role), 0);
 
 	if(mysql_stmt_bind_param(login_procedure, param) != 0) {
  		// Note _param
@@ -188,7 +188,7 @@ role_t attempt_login(struct credentials *cred)
 	}
 
 	// Prepare output parameters
-	set_binding_param(&param[0], MYSQL_TYPE_LONG, &role, sizeof(role));
+	set_binding_param(&param[0], MYSQL_TYPE_LONG, &role, sizeof(role), 0);
 
 	if(mysql_stmt_bind_result(login_procedure, param)) {
 		print_stmt_error(login_procedure, "Could not retrieve output parameter");
@@ -210,6 +210,44 @@ role_t attempt_login(struct credentials *cred)
 	mysql_stmt_free_result(login_procedure);
 	mysql_stmt_reset(login_procedure);
 		return role;
+}
+
+
+void do_user_registration(user_t *user, credentials_t *credentials, credit_card_t *credit_card)
+{
+	MYSQL_BIND param[11];
+	MYSQL_TIME expiration_date, birthday;
+	date_to_mysql_time(user->birthday, &birthday);
+	date_to_mysql_time(credit_card->expiration_date, &expiration_date);
+
+	// Prepareparam parameters
+	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, credentials->username, strlen(credentials->username), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, credentials->password, strlen(credentials->password), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_STRING, user->cf, strlen(user->cf), 0);
+	set_binding_param(&param[3], MYSQL_TYPE_VAR_STRING, user->name, strlen(user->name), 0);
+	set_binding_param(&param[4], MYSQL_TYPE_VAR_STRING, user->surname, strlen(user->surname), 0);
+	set_binding_param(&param[5], MYSQL_TYPE_VAR_STRING, user->address, strlen(user->address), 0);
+	set_binding_param(&param[6], MYSQL_TYPE_DATE, &birthday, sizeof(birthday), 0);
+	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, user->birthcity, strlen(user->birthcity), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_STRING, credit_card->number, strlen(user->address), 0);
+	set_binding_param(&param[9], MYSQL_TYPE_SHORT, &credit_card->CVV, sizeof(credit_card->CVV), 0);
+	set_binding_param(&param[10], MYSQL_TYPE_DATE, &expiration_date, sizeof(expiration_date), 0);
+
+	if(mysql_stmt_bind_param(user_registration, param) != 0) {
+ 		// Note _param
+		print_stmt_error(user_registration, "Could not bind parameters for Add Lesson");
+		return;
+	}
+
+	// Run procedure
+	if(mysql_stmt_execute(user_registration) != 0) {
+		print_stmt_error(user_registration, "Could not execute Add Lesson procedure");
+		return;
+	}
+
+	mysql_stmt_free_result(user_registration);
+	mysql_stmt_reset(user_registration);
+	return;
 }
 
 
@@ -253,6 +291,69 @@ void db_switch_to_user(void)
 		exit(EXIT_FAILURE);
 	}
 }
+
+
+void do_indici_asta(object_t *object, unsigned short int duration)
+{
+	MYSQL_BIND param[11];
+
+	// Prepareparam parameters
+	set_binding_param(&param[0], MYSQL_TYPE_STRING, object->code, strlen(object->code), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, object->state, strlen(object->state), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_TINY, &object->lenght, sizeof(object->lenght), 1);
+	set_binding_param(&param[3], MYSQL_TYPE_TINY, &object->width, sizeof(object->width), 1);
+	set_binding_param(&param[4], MYSQL_TYPE_TINY, &object->height, sizeof(object->height), 1);
+	set_binding_param(&param[5], MYSQL_TYPE_BLOB, object->description, strlen(object->description), 0);
+	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &object->start_price, sizeof(object->start_price), 1);
+	set_binding_param(&param[7], MYSQL_TYPE_TINY, &duration, sizeof(duration), 1);
+	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, object->category->first_level, strlen(object->category->first_level), 0);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, object->category->second_level, strlen(object->category->second_level), 0);
+	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, object->category->third_level, strlen(object->category->third_level), 0);
+
+	if(mysql_stmt_bind_param(indici_asta, param) != 0) {
+ 		// Note _param
+		print_stmt_error(indici_asta, "Could not bind parameters for Add Lesson");
+		return;
+	}
+
+	// Run procedure
+	if(mysql_stmt_execute(indici_asta) != 0) {
+		print_stmt_error(indici_asta, "Could not execute Add Lesson procedure");
+		return;
+	}
+
+	mysql_stmt_free_result(indici_asta);
+	mysql_stmt_reset(indici_asta);
+	return;
+}
+
+
+void do_inserisci_categoria(category_t *category)
+{
+	MYSQL_BIND param[3];
+
+	// Prepareparam parameters
+	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, category->first_level, strlen(category->first_level), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, category->second_level, strlen(category->second_level), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, category->third_level, strlen(category->third_level), 0);
+
+	if(mysql_stmt_bind_param(inserisci_categoria, param) != 0) {
+ 		// Note _param
+		print_stmt_error(inserisci_categoria, "Could not bind parameters for Add Lesson");
+		return;
+	}
+
+	// Run procedure
+	if(mysql_stmt_execute(inserisci_categoria) != 0) {
+		print_stmt_error(inserisci_categoria, "Could not execute Add Lesson procedure");
+		return;
+	}
+
+	mysql_stmt_free_result(inserisci_categoria);
+	mysql_stmt_reset(inserisci_categoria);
+	return;
+}
+
 
 /*
 course_t *do_view_course(char nome_corso[NOME_LEN])
@@ -500,423 +601,5 @@ report_t *do_view_report(cf_t insegnante, bool type)
 void report_dispose(report_t *report)
 {
 	free(report);
-}
-
-
-void do_add_user(user_t user, bool type)
-{
-	MYSQL_BIND param[5];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, user.utente, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, user.nome, strlen(user.nome));
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, user.indirizzo, strlen(user.indirizzo));
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &user.età, sizeof(unsigned char));
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &type, sizeof(bool));
-
-	if(mysql_stmt_bind_param(add_user, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_user, "Could not bind parameters for Add User");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_user) != 0) {
-		print_stmt_error(add_user, "Could not execute Add User procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_user);
-	mysql_stmt_reset(add_user);
-	return;
-}
-
-
-void do_add_contact(contact_t contact)
-{
-	MYSQL_BIND param[3];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, contact.utente, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, contact.tipo, strlen(contact.tipo));
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, contact.recapito, strlen(contact.recapito));
-
-	if(mysql_stmt_bind_param(add_contact, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_contact, "Could not bind parameters for Add Contact");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_contact) != 0) {
-		print_stmt_error(add_contact, "Could not execute Add Contact procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_contact);
-	mysql_stmt_reset(add_contact);
-	return;
-}
-
-
-void do_indici_asta(asta_t asta)
-{
-	MYSQL_BIND param[11];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
-	set_binding_param(&param[2], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-	set_binding_param(&param[3], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
-	set_binding_param(&param[4], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-	set_binding_param(&param[5], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
-	set_binding_param(&param[6], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
-	set_binding_param(&param[8], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
-	set_binding_param(&param[10], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
-
-
-	if(mysql_stmt_bind_param(indici_asta, param) != 0) {
- 		// Note _param
-		print_stmt_error(indici_asta, "Could not bind parameters for Add Certificate");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(indici_asta) != 0) {
-		print_stmt_error(indici_asta, "Could not execute Add Certificate procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(indici_asta);
-	mysql_stmt_reset(indici_asta);
-	return;
-}
-
-
-void do_add_course(struct course_entry course, char nome_piscina[NOME_LEN])
-{
-	MYSQL_BIND param[6];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, course.nome_corso, strlen(course.nome_corso));
-	set_binding_param(&param[1], MYSQL_TYPE_STRING, course.nome_piscina, strlen(course.nome_piscina));
-	set_binding_param(&param[2], MYSQL_TYPE_TINY, &course.min_p, sizeof(char ));
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &course.max_p, sizeof(char));
-	set_binding_param(&param[4], MYSQL_TYPE_LONG, &course.costo, sizeof(int));
-	set_binding_param(&param[5], MYSQL_TYPE_STRING, &course.insegnante, CF_LEN);
-
-	if(mysql_stmt_bind_param(add_course, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_course, "Could not bind parameters for Add Course");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_course) != 0) {
-		print_stmt_error(add_course, "Could not execute Add Course procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_course);
-	mysql_stmt_reset(add_course);
-	return;
-}
-
-
-void do_add_lesson(lesson_t lesson)
-{
-	MYSQL_BIND param[4];
-	MYSQL_TIME giorno;
-	MYSQL_TIME ora;
-
-	date_to_mysql_time(lesson.giorno, &giorno);
-	time_to_mysql_time(lesson.ora, &ora);
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_TINY, &giorno, sizeof(giorno));
-	set_binding_param(&param[1], MYSQL_TYPE_TINY, &ora, sizeof(ora));
-	set_binding_param(&param[2], MYSQL_TYPE_STRING, lesson.nome_corso, strlen(lesson.nome_corso));
-	set_binding_param(&param[3], MYSQL_TYPE_STRING, lesson.nome_piscina, strlen(lesson.nome_piscina));
-
-	if(mysql_stmt_bind_param(add_lesson, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_lesson, "Could not bind parameters for Add Lesson");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_lesson) != 0) {
-		print_stmt_error(add_lesson, "Could not execute Add Lesson procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_lesson);
-	mysql_stmt_reset(add_lesson);
-	return;
-}
-
-
-void do_add_subscription(cf_t iscritto, char course_name[NOME_LEN], char nome_piscina[NOME_LEN])
-{
-	MYSQL_BIND param[2];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, iscritto, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, course_name, strlen(course_name));
-
-	if(mysql_stmt_bind_param(add_subscription, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_subscription, "Could not bind parameters for Add Certificate");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_subscription) != 0) {
-		print_stmt_error(add_subscription, "Could not execute Add Certificate procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_subscription);
-	mysql_stmt_reset(add_subscription);
-	return;
-}
-
-
-void do_remove_course(char course_name[NOME_LEN], char nome_piscina[NOME_LEN])
-{
-	MYSQL_BIND param[1];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, course_name, strlen(course_name));
-
-	if(mysql_stmt_bind_param(remove_course, param) != 0) {
- 		// Note _param
-		print_stmt_error(remove_course, "Could not bind parameters for Remove Course");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(remove_course) != 0) {
-		print_stmt_error(remove_course, "Could not execute Remove Course procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(remove_course);
-	mysql_stmt_reset(remove_course);
-	return;
-}
-
-
-void do_remove_subscription(cf_t user, char course_name[NOME_LEN], char nome_piscina[NOME_LEN])
-{
-	MYSQL_BIND param[3];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, user, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, course_name, strlen(course_name));
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, nome_piscina, NOME_LEN);
-
-	if(mysql_stmt_bind_param(remove_subscription, param) != 0) {
- 		// Note _param
-		print_stmt_error(remove_subscription, "Could not bind parameters for Remove Subscription");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(remove_subscription) != 0) {
-		print_stmt_error(remove_subscription, "Could not execute Remove Subscription procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(remove_subscription);
-	mysql_stmt_reset(remove_subscription);
-	return;
-}
-
-
-void do_remove_user(cf_t user)
-{
-	MYSQL_BIND param[1];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, user, CF_LEN);
-
-	if(mysql_stmt_bind_param(remove_user, param) != 0) {
- 		// Note _param
-		print_stmt_error(remove_user, "Could not bind parameters for Remove User");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(remove_user) != 0) {
-		print_stmt_error(remove_user, "Could not execute Remove User procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(remove_user);
-	mysql_stmt_reset(remove_user);
-	return;
-}
-
-
-void do_modify_lesson(lesson_t lesson)
-{
-	MYSQL_BIND param[4];
-	set_binding_param(&param[0], MYSQL_TYPE_DATE, lesson.giorno, DATE_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_DATE, lesson.ora, DATE_LEN);
-	set_binding_param(&param[2], MYSQL_TYPE_DATE, lesson.nome_corso, strlen(lesson.nome_corso));
-	set_binding_param(&param[3], MYSQL_TYPE_DATE, lesson.nome_piscina, strlen(lesson.nome_piscina));
-
-	if(mysql_stmt_bind_param(modify_lesson, param) != 0) {
- 		// Note _param
-		print_stmt_error(modify_lesson, "Could not bind parameters for Modify Lesson");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(modify_lesson) != 0) {
-		print_stmt_error(modify_lesson, "Could not execute Modify Lesson procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(modify_lesson);
-	mysql_stmt_reset(modify_lesson);
-	return;
-}
-
-
-void do_update_last_visit(cf_t free_swimmer, char nome_piscina[NOME_LEN])
-{
-	MYSQL_BIND param[2];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, free_swimmer, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, nome_piscina, strlen(nome_piscina));
-
-	if(mysql_stmt_bind_param(update_last_visit, param) != 0) {
- 		// Note _param
-		print_stmt_error(update_last_visit, "Could not bind parameters for Update Last Visit");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(update_last_visit) != 0) {
-		print_stmt_error(update_last_visit, "Could not execute Update Last Visit procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(update_last_visit);
-	mysql_stmt_reset(update_last_visit);
-	return;
-}
-
-
-
-void do_end_job(cf_t insegnante)
-{
-	MYSQL_BIND param[1];
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, insegnante, CF_LEN);
-
-	if(mysql_stmt_bind_param(end_job, param) != 0) {
- 		// Note _param
-		print_stmt_error(end_job, "Could not bind parameters for End Job");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(end_job) != 0) {
-		print_stmt_error(end_job, "Could not execute End Job procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(end_job);
-	mysql_stmt_reset(end_job);
-	return;
-}
-
-
-void do_add_title(cf_t insegnante, char title[TITLE_LEN])
-{
-	MYSQL_BIND param[2]; // Used both for input and output
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, insegnante, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, title, strlen(title));
-
-	if(mysql_stmt_bind_param(add_title, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_title, "Could not bind parameters for End Job");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_title) != 0) {
-		print_stmt_error(add_title, "Could not execute End Job procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_title);
-	mysql_stmt_reset(add_title);
-	return;
-}
-
-
-void do_add_new_job(job_t job)
-{
-	MYSQL_BIND param[3];
-	MYSQL_TIME data_inizio;
-
-	date_to_mysql_time(job.data_inizio, &data_inizio);
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, job.insegnante, CF_LEN);
-	set_binding_param(&param[1], MYSQL_TYPE_DATE, &data_inizio, sizeof(data_inizio));
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, job.nome_piscina, strlen(job.nome_piscina));
-
-	if(mysql_stmt_bind_param(add_new_job, param) != 0) {
- 		// Note _param
-		print_stmt_error(add_new_job, "Could not bind parameters for Add New Job");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(add_new_job) != 0) {
-		print_stmt_error(add_new_job, "Could not execute Add New Job procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(add_new_job);
-	mysql_stmt_reset(add_new_job);
-	return;
-}
-
-
-void do_update_manager(char nome_piscina[NOME_LEN], char nuovo_responsabile[NOME_LEN])
-{
-	MYSQL_BIND param[2]; // Used both for input and output
-
-	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, nome_piscina, strlen(nome_piscina));
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, nuovo_responsabile, strlen(nuovo_responsabile));
-
-	if(mysql_stmt_bind_param(update_manager, param) != 0) {
- 		// Note _param
-		print_stmt_error(update_manager, "Could not bind parameters for Update Manager");
-		return;
-	}
-
-	// Run procedure
-	if(mysql_stmt_execute(update_manager) != 0) {
-		print_stmt_error(update_manager, "Could not execute Update Manager procedure");
-		return;
-	}
-
-	mysql_stmt_free_result(update_manager);
-	mysql_stmt_reset(update_manager);
-	return;
 }
 */
