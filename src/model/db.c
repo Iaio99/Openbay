@@ -10,24 +10,14 @@
 static MYSQL *conn;
 
 static MYSQL_STMT *login_procedure;
-static MYSQL_STMT *view_pool;
-static MYSQL_STMT *view_course;
-static MYSQL_STMT *view_report;
-static MYSQL_STMT *add_user;
-static MYSQL_STMT *add_contact;
-static MYSQL_STMT *add_certificate;
-static MYSQL_STMT *add_course;
-static MYSQL_STMT *add_lesson;
-static MYSQL_STMT *add_subscription;
-static MYSQL_STMT *remove_course;
-static MYSQL_STMT *remove_subscription;
-static MYSQL_STMT *remove_user;
-static MYSQL_STMT *modify_lesson;
-static MYSQL_STMT *update_last_visit;
-static MYSQL_STMT *end_job;
-static MYSQL_STMT *add_title;
-static MYSQL_STMT *add_new_job;
-static MYSQL_STMT *update_manager;
+static MYSQL_STMT *fai_offerta;
+static MYSQL_STMT *imposta_controfferta;
+static MYSQL_STMT *indici_asta;
+static MYSQL_STMT *inserisci_categoria;
+static MYSQL_STMT *stato_aste_utente;
+static MYSQL_STMT *user_registration;
+static MYSQL_STMT *visualizza_aste_passate;
+static MYSQL_STMT *visualizza_oggetti_asta;
 
 
 static void close_prepared_stmts(void)
@@ -36,73 +26,37 @@ static void close_prepared_stmts(void)
 		mysql_stmt_close(login_procedure);
 		login_procedure = NULL;
 	}
-	if(view_pool) {
-		mysql_stmt_close(view_pool);
-		view_pool = NULL;
+	if(fai_offerta) {
+		mysql_stmt_close(fai_offerta);
+		fai_offerta = NULL;
 	}
-	if(view_course) {
-		mysql_stmt_close(view_course);
-		view_course = NULL;
+	if(imposta_controfferta) {
+		mysql_stmt_close(imposta_controfferta);
+		imposta_controfferta = NULL;
 	}
-	if(view_report) {
-		mysql_stmt_close(view_report);
-		view_report = NULL;
+	if(indici_asta) {
+		mysql_stmt_close(indici_asta);
+		indici_asta = NULL;
 	}
-	if(add_user) {
-		mysql_stmt_close(add_user);
-		add_user = NULL;
+	if(inserisci_categoria) {
+		mysql_stmt_close(inserisci_categoria);
+		inserisci_categoria = NULL;
 	}
-	if(add_contact) {
-		mysql_stmt_close(add_contact);
-		add_contact = NULL;
+	if(stato_aste_utente) {
+		mysql_stmt_close(stato_aste_utente);
+		stato_aste_utente = NULL;
 	}
-	if(add_certificate) {
-		mysql_stmt_close(add_certificate);
-		add_certificate = NULL;
+	if(user_registration) {
+		mysql_stmt_close(user_registration);
+		user_registration = NULL;
 	}
-	if(add_course) {
-		mysql_stmt_close(add_course);
-		add_course = NULL;
+	if(visualizza_aste_passate) {
+		mysql_stmt_close(visualizza_aste_passate);
+		visualizza_aste_passate = NULL;
 	}
-	if(add_subscription) {
-		mysql_stmt_close(add_subscription);
-		add_subscription = NULL;
-	}
-	if(remove_course) {
-		mysql_stmt_close(remove_course);
-		remove_course = NULL;
-	}
-	if(remove_subscription) {
-		mysql_stmt_close(remove_subscription);
-		remove_subscription = NULL;
-	}
-	if(remove_user) {
-		mysql_stmt_close(remove_user);
-		remove_user = NULL;
-	}
-	if(modify_lesson) {
-		mysql_stmt_close(modify_lesson);
-		modify_lesson = NULL;
-	}
-	if(update_last_visit) {
-		mysql_stmt_close(update_last_visit);
-		update_last_visit = NULL;
-	}
-	if(end_job) {
-		mysql_stmt_close(end_job);
-		end_job = NULL;
-	}
-	if(add_title) {
-		mysql_stmt_close(add_title);
-		add_title = NULL;
-	}
-	if(add_new_job) {
-		mysql_stmt_close(add_new_job);
-		add_new_job = NULL;
-	}
-	if(update_manager) {
-		mysql_stmt_close(update_manager);
-		update_manager = NULL;
+	if(visualizza_oggetti_asta) {
+		mysql_stmt_close(visualizza_oggetti_asta);
+		visualizza_oggetti_asta = NULL;
 	}
 }
 
@@ -116,36 +70,44 @@ static bool initialize_prepared_stmts(role_t for_role)
 				print_stmt_error(login_procedure, "Unable to initialize Login statement\n");
 				return false;
 			}
+			if(!setup_prepared_stmt(&user_registration, "call user_registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
+				print_stmt_error(user_registration, "Unable to initialize Info Corso statement\n");
+				return false;
+			}
 			break;
 		
 		case ADMIN:
-			if(!setup_prepared_stmt(&end_job, "call end_job(?)", conn)) {
-				print_stmt_error(view_pool, "Unable to initialize End Job statement\n");
+			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
+				print_stmt_error(indici_asta, "Unable to initialize End Job statement\n");
 				return false;
 			}
-			if(!setup_prepared_stmt(&add_title, "call add_title(?, ?)", conn)) {
-				print_stmt_error(view_pool, "Unable to initialize Add Title statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&add_new_job, "call add_new_job(?, ?, ?)", conn)) {
-				print_stmt_error(add_new_job, "Unable to initialize  Add New Job statement\n");
-				return false;
-			}
-			if(!setup_prepared_stmt(&update_manager, "call update_manager(?, ?)", conn)) {
-				print_stmt_error(update_manager, "Unable to initialize Update Manager statement\n");
+			if(!setup_prepared_stmt(&inserisci_categoria, "call inserisci_categoria(?, ?, ?)", conn)) {
+				print_stmt_error(inserisci_categoria, "Unable to initialize Add Title statement\n");
 				return false;
 			}
 			break;
 
 		case USER:
-			if(!setup_prepared_stmt(&view_pool, "call info_piscine(?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(view_pool, "Unable to initialize register Info Piscine statement\n");
+			if(!setup_prepared_stmt(&fai_offerta, "call fai_offerta(?, ?, ?)", conn)) {
+				print_stmt_error(fai_offerta, "Unable to initialize register Info Piscine statement\n");
 				return false;
 			}
-			if(!setup_prepared_stmt(&view_course, "call info_corso(?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(view_course, "Unable to initialize Info Corso statement\n");
+			if(!setup_prepared_stmt(&imposta_controfferta, "call imposta_controfferta(?, ?, ?)", conn)) {
+				print_stmt_error(imposta_controfferta, "Unable to initialize Info Corso statement\n");
 				return false;
 			}
+			if(!setup_prepared_stmt(&stato_aste_utente, "call stato_aste_utente(?)", conn)) {
+				print_stmt_error(stato_aste_utente, "Unable to initialize register Info Piscine statement\n");
+				return false;
+			}
+			if(!setup_prepared_stmt(&visualizza_aste_passate, "call visualizza_aste_passate()", conn)) {
+				print_stmt_error(visualizza_aste_passate, "Unable to initialize register Info Piscine statement\n");
+				return false;
+			}
+			if(!setup_prepared_stmt(&visualizza_oggetti_asta, "call visualizza_oggetti_asta()", conn)) {
+				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize Info Corso statement\n");
+				return false;
+			}		
 			break;
 
 		default:
@@ -597,28 +559,38 @@ void do_add_contact(contact_t contact)
 }
 
 
-void do_add_certificate(certificate_t certificate)
+void do_indici_asta(asta_t asta)
 {
-	MYSQL_BIND param[2];
+	MYSQL_BIND param[11];
 
 	// Prepareparam parameters
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
+	set_binding_param(&param[2], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
+	set_binding_param(&param[3], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
+	set_binding_param(&param[4], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
+	set_binding_param(&param[5], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
+	set_binding_param(&param[6], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
+	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
+	set_binding_param(&param[8], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, certificate.medico, strlen(certificate.medico));
+	set_binding_param(&param[10], MYSQL_TYPE_STRING, &certificate.iscritto, CF_LEN);
 
-	if(mysql_stmt_bind_param(add_certificate, param) != 0) {
+
+	if(mysql_stmt_bind_param(indici_asta, param) != 0) {
  		// Note _param
-		print_stmt_error(add_certificate, "Could not bind parameters for Add Certificate");
+		print_stmt_error(indici_asta, "Could not bind parameters for Add Certificate");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(add_certificate) != 0) {
-		print_stmt_error(add_certificate, "Could not execute Add Certificate procedure");
+	if(mysql_stmt_execute(indici_asta) != 0) {
+		print_stmt_error(indici_asta, "Could not execute Add Certificate procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(add_certificate);
-	mysql_stmt_reset(add_certificate);
+	mysql_stmt_free_result(indici_asta);
+	mysql_stmt_reset(indici_asta);
 	return;
 }
 

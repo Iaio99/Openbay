@@ -33,7 +33,7 @@ typedef struct credentials {
 
 typedef struct credit_card {
 	char number[CREDIT_CARD_NUMBER_LEN];
-	cf_t accountholder;
+	cf_t account_holder;
 	unsigned short int CVV;
 	char expiration_date[DATE_LEN];
 }credit_card_t;
@@ -52,6 +52,27 @@ typedef struct user {
 	char birthday[DATE_LEN];
 	char birthcity[CITY_NAME_LEN];
 }user_t;
+
+typedef struct object {
+	code_t code;
+	char state[32];
+	unsigned short int lenght;
+	unsigned short int width;
+	unsigned short int height;
+	char description[65535];
+	float start_price;
+	category_t category;
+}object_t;
+
+struct asta_entry {
+	object_t object;
+	float max_offer;
+};
+
+typedef struct asta {
+	unsigned num_entries;
+	struct asta_entry aste[];
+}asta_t;
 
 /*
 Return type of query example
