@@ -22,6 +22,7 @@ static void leave(void)
 		exit(EXIT_SUCCESS);
 }
 
+
 char *get_input(char *question, int len, char *buff, bool hide)
 {
 	printf("%s", question);
@@ -72,6 +73,13 @@ char *get_input(char *question, int len, char *buff, bool hide)
 #endif
 
 	return buff;
+}
+
+
+int get_number(char *question, char *fmt, void *buffer)
+{
+	printf("%s:", question);
+	return scanf(fmt, buffer);
 }
 
 
