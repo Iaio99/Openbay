@@ -33,7 +33,7 @@ typedef struct credentials {
 
 typedef struct credit_card {
 	char number[CREDIT_CARD_NUMBER_LEN];
-	unsigned short int CVV;
+	unsigned short int cvv;
 	char expiration_date[DATE_LEN];
 }credit_card_t;
 
@@ -60,12 +60,13 @@ typedef struct object {
 	unsigned short int height;
 	char description[65535];
 	float start_price;
-	category_t *category;
+	category_t category;
 }object_t;
 
 struct asta_entry {
 	object_t object;
 	float max_offer;
+	unsigned short int number_offers;
 };
 
 typedef struct asta {
@@ -73,22 +74,6 @@ typedef struct asta {
 	struct asta_entry aste[];
 }asta_t;
 
-/*
-Return type of query example
-struct pool_entry {
-	char nome_piscina[NOME_LEN];
-	char telefono[TELEFONO_LEN];
-	char indirizzo[INDIRIZZO_LEN];
-	char apertura[DATE_LEN];
-	char chiusura[DATE_LEN];
-	char nome_corso[NOME_LEN];
-};
-
-typedef struct pool {
-	unsigned num_entries;
-	struct pool_entry pool[];
-}pool_t;
-*/
 
 //DB operations
 extern bool init_db(void);
@@ -96,9 +81,14 @@ extern void fini_db(void);
 
 //Login operations
 extern role_t attempt_login(credentials_t *cred);
-void do_user_registration(user_t *user, credentials_t *credentials, credit_card_t *credit_card);
+extern void do_user_registration(user_t user, credentials_t credentials, credit_card_t credit_card);
 extern void db_switch_to_login(void);
 extern void db_switch_to_user(void);
 extern void db_switch_to_administrator(void);
-void do_indici_asta(object_t *object, unsigned short int duration);
-void do_inserisci_categoria(category_t *category);
+extern void do_indici_asta(object_t object, unsigned short int duration);
+extern void do_inserisci_categoria(category_t category);
+extern void do_fai_offerta(cf_t user, float import, code_t object);
+extern void do_imposta_controfferta(cf_t user, float import, code_t object);
+extern asta_t *do_stato_aste_utente(cf_t user);
+extern asta_t *do_visualizza_aste_passate();
+extern asta_t *do_visualizza_oggetti_asta();
