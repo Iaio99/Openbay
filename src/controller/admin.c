@@ -9,6 +9,7 @@
 #include "../view/admin.h"
 #include "../utils/io.h"
 
+
 char randchar(int first_letter, int last_letter)
 {
 	char c;
@@ -17,6 +18,7 @@ char randchar(int first_letter, int last_letter)
 
 	return c;
 }
+
 
 void randcode(code_t *code)
 {
@@ -28,6 +30,7 @@ void randcode(code_t *code)
 	*code[5] = randchar('0', '9');
 	*code[6] = randchar('0', '9');
 }
+
 
 static bool add_new_object(void)
 {
