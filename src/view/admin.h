@@ -2,12 +2,11 @@
 #include "../model/db.h"
 
 enum actions {
-//	JOB_END,
-//	JOB_NEW,
-//	TITLE_NEW,
-//	UPDATE_MANAGER,
+	OBJECT_NEW,
+	CATEGORY_NEW,
 	QUIT,
 	END_OF_ACTIONS
 };
+
 
 extern int get_administrator_action(void);

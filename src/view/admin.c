@@ -7,7 +7,7 @@
 
 int get_administrator_action(void)
 {
-	char options[5] = {'1', '2', '3', '4', '5'};
+	char options[3] = {'1', '2', '3'};
 	char op;
 
 	clear_screen();
@@ -15,12 +15,10 @@ int get_administrator_action(void)
 	puts("*        ADMIN DASHBOARD        *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
-	puts("1) Set job end of a teacher");
-	puts("2) Add a qualification to a teacher");
-	puts("3) Add new job for a teacher");
-	puts("4) Change manager of a pool");
-	puts("5) Quit");
+	puts("1) Add a new object and make an asta");
+	puts("2) Add a new category");
+	puts("3) Quit");
 
-	op = multi_choice("Select an option", options, 5);
+	op = multi_choice("Select an option", options, 3);
 	return op - '1';
 }

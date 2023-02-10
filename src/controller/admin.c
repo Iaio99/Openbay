@@ -1,62 +1,76 @@
+#include <random.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "admin.h"
 #include "../model/db.h"
 #include "../view/admin.h"
 #include "../utils/io.h"
 
-/*
-static bool end_job(void)
+char randchar(int first_letter, int last_letter)
 {
-	cf_t insegnante;
+	char c;
+	srand(time(null));
+	c = rand() % (last_letter + 1 - first_letter) + first_letter;
+
+	return c;
+}
+
+void randcode(code_t *code)
+{
+	*code[0] = randchar('a', 'z');
+	*code[1] = randchar('a', 'z');
+	*code[2] = randchar('a', 'z');
+	*code[3] = '-';
+	*code[4] = randchar('0', '9');
+	*code[5] = randchar('0', '9');
+	*code[6] = randchar('0', '9');
+}
+
+static bool add_new_object(void)
+{
+	object_t object;
+	unsigned char duration;
+
+	randcode(&object.code);
+
+	get_input("State: ", STATE_LEN, object.state, false);
+	get_number("Lenght: ", "%hu", &object.lenght);
+	get_number("Width: ", "%hu", &object.width);
+	get_number("Height: ", "%hu", &object.height);
+	get_input("Description: ", DESCRIPTION_LEN, object.description, false);
+	get_number("Base d'asta: ", "%hu", &object.start_price);
+	get_input("First level of category: ", LEVEL_LEN, object.category.first_level, false);
+	get_input("Second level of category: ", LEVEL_LEN, object.category.second_level, false);
+	get_input("Third level of category:", LEVEL_LEN, object.category.third_level, false);
 	
-	get_input("CF insegnante: ", CF_LEN, insegnante, false);
-	do_end_job(insegnante);
+	get_number("Asta Duration [1-7]: ", "%cu", &duration);
+
+	if (duration > 7 || duration < 1)
+		return false;
+
+	do_indici_asta(object, duration);
 
     return false;
 }
 
-static bool add_new_job(void)
-{
-	job_t job;
 
-	get_input("CF insegnante: ", CF_LEN, job.insegnante, false);
-	get_input("Data Inizio: ", DATE_LEN, job.data_inizio, false);
-	get_input("Nome piscina: ", NOME_LEN, job.nome_piscina, false);
+static bool add_new_category(void)
+{
+	category_t category;
+
+	get_input("First Level: ", LEVEL_LEN, category.first_level, false);
+	get_input("Second Level: ", LEVEL_LEN, category.second_level, false);
+	get_input("Third Level: ", LEVEL_LEN, category.third_level, false);
 	
-	do_add_new_job(job);
+	do_inserisci_categoria(category);
 
     return false;
 }
 
-static bool add_title(void)
-{
-	cf_t insegnante;
-	char title[TITLE_LEN];
-	
-	get_input("CF insegnante: ", CF_LEN, insegnante, false);
-	get_input("New qualification got: ", TITLE_LEN, title, false);
-	
-	do_add_title(insegnante, title);
 
-    return false;
-}
-
-static bool update_manager(void)
-{
-	char pool_name[NOME_LEN];
-	char new_manager[NOME_LEN];
-
-	get_input("Pool name: ", NOME_LEN, pool_name, false);
-	get_input("New manager name: ", NOME_LEN, new_manager, false);
-
-	do_update_manager(pool_name, new_manager);
-
-    return false;
-}
-*/
 static bool quit(void) {
 	return true;
 }
@@ -66,10 +80,8 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-//	{.action = JOB_END, .control = end_job},
-//	{.action = JOB_NEW, .control = add_new_job},
-//	{.action = TITLE_NEW, .control = add_title},
-//	{.action = UPDATE_MANAGER, .control = update_manager},
+	{.action = OBJECT_NEW, .control = add_new_object},
+	{.action = CATEGORY_NEW, .control = add_new_category},
 	{.action = QUIT, .control = quit}
 };
 
