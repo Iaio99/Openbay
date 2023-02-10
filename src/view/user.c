@@ -18,39 +18,33 @@ int get_user_action(void)
 	puts("1) Print pools informations");
 	puts("2) Print courses informations");
 	puts("3) Quit");
+	puts("4) Print pools informations");
+	puts("5) Print courses informations");
+	puts("6) Quit");
 	puts("\033[0;0m");
 
 	op = multi_choice("\033[;33mSelect an option\033[;0m", options, 3);
 	return op - '1';
 }
-/*
-void print_pool(pool_t *pool)
+
+void print_aste(asta_t *aste)
 {
 	clear_screen();
 	printf("** test **\n\n");
 
-	for(size_t i = 0; i < pool->num_entries; i++) {
-		printf("%s %s %s %s %s %s\n",
-			pool->pool[i].nome_piscina,
-			pool->pool[i].indirizzo,
-			pool->pool[i].telefono,
-			pool->pool[i].nome_corso,
-			pool->pool[i].apertura,
-			pool->pool[i].chiusura);
+	for(size_t i = 0; i < aste->num_entries; i++) {
+		printf("%s %s %hu %hu %hu %hu %s %f %s %s %s %hu %f\n",
+			aste->aste[i].object.code,
+			aste->aste[i].object.state,
+			aste->aste[i].object.lenght,
+			aste->aste[i].object.width,
+			aste->aste[i].object.height,
+			aste->aste[i].object.description,
+			aste->aste[i].object.start_price
+			aste->aste[i].object.category.first_level,
+			aste->aste[i].object.category.second_level,
+			aste->aste[i].object.category.third_level,
+			aste->aste[i].number_offers;
+			aste->aste[i].max_offer;
 	}
 }
-
-void print_course(course_t *course)
-{
-	clear_screen();
-	printf("** test **\n\n");
-
-	for(size_t i = 0; i < course->num_entries; i++) {
-		printf("%s %d %d %d\n",
-			course->course[i].nome_piscina,
-			course->course[i].min_p,
-			course->course[i].max_p,
-			course->course[i].costo);
-	}
-}
-*/

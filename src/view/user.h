@@ -2,14 +2,15 @@
 #include "../model/db.h"
 
 enum actions {
-//	REPORT_POOL,
-//	REPORT_COURSE,
+	OFFER,
+	CONTROFFER,
+	USER_ASTE,
+	ASTE_IN_CORSO,
+	ASTE_FINITE,
 	QUIT,
 	END_OF_ACTIONS
 };
 
 extern int get_user_action(void);
-/*
-void print_pool(pool_t *);
-void print_course(course_t *);
-*/
+
+void print_aste();

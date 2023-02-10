@@ -6,29 +6,43 @@
 #include "../model/db.h"
 #include "../view/user.h"
 #include "../utils/io.h"
-/*
-static bool report_pool(void)
-{
-	pool_t *pool = do_view_pool();
-	if (pool != NULL) {
-		print_pool(pool);
-		pool_dispose(pool);
-	}
-    return false;
-}
 
-static bool report_course(void)
+
+/*
+static bool user_aste(void)
 {
-    char course_name[NOME_LEN];
-    get_input("Course name: ", NOME_LEN, course_name, false);
-	course_t *course = do_view_course(course_name);
-	if(course != NULL) {
-		print_course(course);
-		course_dispose(course);
+	asta_t *aste = do_stato_aste_utente(user);
+	if(aste != NULL) {
+		print_aste(aste);
+		aste_dispose(aste);
 	}
 	return false;
 }
 */
+
+
+static bool aste_in(void)
+{
+	asta_t *aste = do_visualizza_oggetti_asta();
+	if(aste != NULL) {
+		print_aste(aste);
+		aste_dispose(aste);
+	}
+	return false;
+}
+
+
+static bool aste_done(void)
+{
+	asta_t *aste = do_visualizza_aste_passate();
+	if(aste != NULL) {
+		print_aste(aste);
+		aste_dispose(aste);
+	}
+	return false;
+}
+
+
 
 static bool quit(void) {
 	return true;
@@ -39,8 +53,11 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-//	{.action = REPORT_POOL, .control = report_pool},
-//	{.action = REPORT_COURSE, .control = report_course},
+//	{.action = OFFER, .control = report_pool},
+//	{.action = CONTROFFER, .control = report_course},
+//	{.action = USER_ASTE, .control = report_pool},
+	{.action = ASTE_IN_CORSO, .control = aste_in},
+	{.action = ASTE_FINITE, .control = aste_done},
 	{.action = QUIT, .control = quit}
 };
 
