@@ -294,7 +294,7 @@ void db_switch_to_user(void)
 }
 
 
-void do_indici_asta(object_t object, unsigned short int duration)
+void do_indici_asta(object_t object, unsigned char duration)
 {
 	MYSQL_BIND param[11];
 

@@ -14,6 +14,8 @@
 #define CREDIT_CARD_NUMBER_LEN 19
 #define LEVEL_LEN 32
 #define CITY_NAME_LEN 32
+#define DESCRIPTION_LEN 65535
+#define STATE_LEN 32
 
 typedef char cf_t[CF_LEN];
 typedef char code_t[CODE_LEN];
@@ -54,11 +56,11 @@ typedef struct user {
 
 typedef struct object {
 	code_t code;
-	char state[32];
+	char state[STATE_LEN];
 	unsigned short int lenght;
 	unsigned short int width;
 	unsigned short int height;
-	char description[65535];
+	char description[DESCRIPTION_LEN];
 	float start_price;
 	category_t category;
 }object_t;
@@ -85,7 +87,7 @@ extern void do_user_registration(user_t user, credentials_t credentials, credit_
 extern void db_switch_to_login(void);
 extern void db_switch_to_user(void);
 extern void db_switch_to_administrator(void);
-extern void do_indici_asta(object_t object, unsigned short int duration);
+extern void do_indici_asta(object_t object, unsigned char duration);
 extern void do_inserisci_categoria(category_t category);
 extern void do_fai_offerta(cf_t user, float import, code_t object);
 extern void do_imposta_controfferta(cf_t user, float import, code_t object);
