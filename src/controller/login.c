@@ -13,6 +13,7 @@ bool login(void)
 	credentials_t cred;
 
 	view_login(&cred);
+
 	role_t role = attempt_login(&cred);
 
 	switch(role) {
@@ -27,4 +28,13 @@ bool login(void)
 	}
 
 	return true;
+}
+
+bool registrate_user(void)
+{
+	credentials_t cred;
+	user_t user;
+	credit_card_t credit_card;
+
+	view_registration(&cred, &user, &credit_card);
 }

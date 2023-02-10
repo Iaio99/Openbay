@@ -47,11 +47,23 @@ int main()
 		return 1;
 
 	if(initialize_io()) {
-		do {
-			if(!login())
-				fprintf(stderr, "Login unsuccessful\n");
-			db_switch_to_login();
-		} while(ask_for_relogin());
+		int op;
+		op = get_login_action();
+		switch (op) {
+			case 0:
+				registrate_user();
+				break;
+			case 1:
+				do {
+					if(!login())
+						fprintf(stderr, "Login unsuccessful\n");
+					db_switch_to_login();
+				} while(ask_for_relogin());
+				break;
+			case 2:
+			default:
+				break;
+		}
 	}
 	fini_db();
 	fini_validation();
