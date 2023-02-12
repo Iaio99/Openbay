@@ -7,7 +7,7 @@
 
 int get_user_action(void)
 {
-	char options[3] = {'1', '2', '3'};
+	char options[5] = {'1', '2', '3', '4', '5'};
 	char op;
 
 	clear_screen();
@@ -15,15 +15,14 @@ int get_user_action(void)
 	puts("*        USER DASHBOARD         *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
-	puts("1) Print pools informations");
-	puts("2) Print courses informations");
-	puts("3) Quit");
-	puts("4) Print pools informations");
-	puts("5) Print courses informations");
-	puts("6) Quit");
+	puts("1) See status of my aste");
+	puts("2) See aste in doing");
+	puts("3) Do an offer");
+	puts("4) See objects aggiudicated");
+	puts("5) Quit");
 	puts("\033[0;0m");
 
-	op = multi_choice("\033[;33mSelect an option\033[;0m", options, 3);
+	op = multi_choice("\033[;33mSelect an option\033[;0m", options, 5);
 	return op - '1';
 }
 

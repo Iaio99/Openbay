@@ -7,27 +7,60 @@
 #include "../view/user.h"
 #include "../utils/io.h"
 
-
 /*
+	ATTENTION: "1234567890123456" IS JUST A PLACEHOLDER
+*/
+
+
 static bool user_aste(void)
 {
-	asta_t *aste = do_stato_aste_utente(user);
+	asta_t *aste = do_stato_aste_utente("1234567890123456");
+	
 	if(aste != NULL) {
 		print_aste(aste);
 		aste_dispose(aste);
 	}
+	
 	return false;
 }
-*/
+
+
+static bool offer(void)
+{
+	float import;
+	code_t object_code;
+	
+	get_input("Insert object's code: ", CODE_LEN, object_code, false);
+	get_number("Insert import: ", "%f", &import);
+
+	do_fai_offerta("1234567890123456", import, object_code);
+
+	yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', false, true);
+	
+	return false;
+}
+
+
+static bool set_controffer(code_t object_code)
+{
+	float import;
+	
+	get_number("Insert import: ", "%f", &import);
+	do_imposta_controfferta("1234567890123456", import, object_code);
+	
+	return false;
+}
 
 
 static bool aste_in(void)
 {
 	asta_t *aste = do_visualizza_oggetti_asta();
+	
 	if(aste != NULL) {
 		print_aste(aste);
 		aste_dispose(aste);
 	}
+	
 	return false;
 }
 
@@ -35,10 +68,12 @@ static bool aste_in(void)
 static bool aste_done(void)
 {
 	asta_t *aste = do_visualizza_aste_passate();
+	
 	if(aste != NULL) {
 		print_aste(aste);
 		aste_dispose(aste);
 	}
+	
 	return false;
 }
 
@@ -52,9 +87,8 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-//	{.action = OFFER, .control = report_pool},
-//	{.action = CONTROFFER, .control = report_course},
-//	{.action = USER_ASTE, .control = report_pool},
+	{.action = OFFER, .control = offer},
+	{.action = USER_ASTE, .control = user_aste},
 	{.action = ASTE_IN_CORSO, .control = aste_in},
 	{.action = ASTE_FINITE, .control = aste_done},
 	{.action = QUIT, .control = quit}

@@ -3,7 +3,6 @@
 
 enum actions {
 	OFFER,
-	CONTROFFER,
 	USER_ASTE,
 	ASTE_IN_CORSO,
 	ASTE_FINITE,
