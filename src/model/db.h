@@ -94,3 +94,4 @@ extern void do_imposta_controfferta(cf_t user, float import, code_t object);
 extern asta_t *do_stato_aste_utente(cf_t user);
 extern asta_t *do_visualizza_aste_passate();
 extern asta_t *do_visualizza_oggetti_asta();
+extern void aste_dispose();

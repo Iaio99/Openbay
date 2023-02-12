@@ -43,7 +43,6 @@ static bool aste_done(void)
 }
 
 
-
 static bool quit(void) {
 	return true;
 }

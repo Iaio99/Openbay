@@ -1,6 +1,6 @@
-#include <random.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -13,7 +13,7 @@
 char randchar(int first_letter, int last_letter)
 {
 	char c;
-	srand(time(null));
+	srand(time(NULL));
 	c = rand() % (last_letter + 1 - first_letter) + first_letter;
 
 	return c;

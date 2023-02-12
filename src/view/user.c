@@ -40,11 +40,12 @@ void print_aste(asta_t *aste)
 			aste->aste[i].object.width,
 			aste->aste[i].object.height,
 			aste->aste[i].object.description,
-			aste->aste[i].object.start_price
+			aste->aste[i].object.start_price,
 			aste->aste[i].object.category.first_level,
 			aste->aste[i].object.category.second_level,
 			aste->aste[i].object.category.third_level,
-			aste->aste[i].number_offers;
-			aste->aste[i].max_offer;
+			aste->aste[i].number_offers,
+			aste->aste[i].max_offer
+		);
 	}
 }
