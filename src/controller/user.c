@@ -7,9 +7,6 @@
 #include "../view/user.h"
 #include "../utils/io.h"
 
-/*
-	ATTENTION: "1234567890123456" IS JUST A PLACEHOLDER
-*/
 
 cf_t user_cf;
 

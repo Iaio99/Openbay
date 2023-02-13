@@ -51,14 +51,14 @@ int main()
 		op = get_login_action();
 		switch (op) {
 			case 0:
-				registrate_user();
-				break;
-			case 1:
 				do {
 					if(!login())
 						fprintf(stderr, "Login unsuccessful\n");
 					db_switch_to_login();
 				} while(ask_for_relogin());
+				break;
+			case 1:
+				registrate_user();
 				break;
 			case 2:
 			default:

@@ -37,4 +37,5 @@ bool registrate_user(void)
 	credit_card_t credit_card;
 
 	view_registration(&cred, &user, &credit_card);
+	do_user_registration(user, cred, credit_card);
 }

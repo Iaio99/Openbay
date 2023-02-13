@@ -175,7 +175,7 @@ struct login_data attempt_login(credentials_t *cred)
 	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, cred->username, strlen(cred->username), 0);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, cred->password, strlen(cred->password), 0);
 	set_binding_param(&param[2], MYSQL_TYPE_LONG, &data.role, sizeof(data.role), 0);
-	set_binding_param(&param[4], MYSQL_TYPE_STRING, data.cf, CF_LEN, 0);
+	set_binding_param(&param[3], MYSQL_TYPE_STRING, data.cf, CF_LEN, 0);
 
 
 	if(mysql_stmt_bind_param(login_procedure, param) != 0) {
@@ -236,19 +236,19 @@ void do_user_registration(user_t user, credentials_t credentials, credit_card_t 
 	set_binding_param(&param[5], MYSQL_TYPE_VAR_STRING, user.address, strlen(user.address), 0);
 	set_binding_param(&param[6], MYSQL_TYPE_DATE, &birthday, sizeof(birthday), 0);
 	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, user.birthcity, strlen(user.birthcity), 0);
-	set_binding_param(&param[8], MYSQL_TYPE_STRING, credit_card.number, strlen(user.address), 0);
-	set_binding_param(&param[9], MYSQL_TYPE_SHORT, &credit_card.cvv, sizeof(credit_card.cvv), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_STRING, credit_card.number, strlen(credit_card.number), 0);
+	set_binding_param(&param[9], MYSQL_TYPE_SHORT, &credit_card.cvv, sizeof(credit_card.cvv), 1);
 	set_binding_param(&param[10], MYSQL_TYPE_DATE, &expiration_date, sizeof(expiration_date), 0);
 
 	if(mysql_stmt_bind_param(user_registration, param) != 0) {
  		// Note _param
-		print_stmt_error(user_registration, "Could not bind parameters for Add Lesson");
+		print_stmt_error(user_registration, "Could not bind parameters for user_registration");
 		return;
 	}
 
 	// Run procedure
 	if(mysql_stmt_execute(user_registration) != 0) {
-		print_stmt_error(user_registration, "Could not execute Add Lesson procedure");
+		print_stmt_error(user_registration, "Could not execute user_registration procedure");
 		return;
 	}
 
