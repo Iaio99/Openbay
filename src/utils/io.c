@@ -46,7 +46,7 @@ char *get_input(char *question, int len, char *buff, bool hide)
 	(void)hide;
 #endif
 
-	if(fgets(buff, len, stdin) != NULL) {
+	if(fgets(buff, len + 1, stdin) != NULL) {
 		buff[strcspn(buff, "\n")] = 0;
 	} else {
 		printf("EOF received, leaving...\n");
@@ -55,7 +55,7 @@ char *get_input(char *question, int len, char *buff, bool hide)
 	}
 
 	// Empty stdin
-	if(strlen(buff) + 1 == len) {
+	if(strlen(buff) + 1 == len + 1) {
 		int ch;
 		while(((ch = getchar()) != EOF) && (ch != '\n'));
 		if(ch == EOF) {
