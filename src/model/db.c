@@ -67,7 +67,7 @@ static bool initialize_prepared_stmts(role_t for_role)
 	switch(for_role) {
 
 		case LOGIN_ROLE:
-			if(!setup_prepared_stmt(&login_procedure, "call login(?, ?, ?)", conn)) {
+			if(!setup_prepared_stmt(&login_procedure, "call login(?, ?, ?, ?)", conn)) {
 				print_stmt_error(login_procedure, "Unable to initialize Login statement\n");
 				return false;
 			}
