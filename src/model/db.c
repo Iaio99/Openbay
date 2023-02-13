@@ -275,7 +275,7 @@ void db_switch_to_login(void)
 void db_switch_to_administrator(void)
 {
 	close_prepared_stmts();
-	if(mysql_change_user(conn, getenv("ADMINISTRATOR_USER"), getenv("ADMINISTRATOR_PASS"), getenv("DB"))) {
+	if(mysql_change_user(conn, getenv("ADMIN_USER"), getenv("ADMIN_PASS"), getenv("DB"))) {
 		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
@@ -289,7 +289,7 @@ void db_switch_to_administrator(void)
 void db_switch_to_user(void)
 {
 	close_prepared_stmts();
-	if(mysql_change_user(conn, getenv("ANONYMOUS_USER"), getenv("ANONYMOUS_PASS"), getenv("DB"))) {
+	if(mysql_change_user(conn, getenv("USER_USER"), getenv("USER_PASS"), getenv("DB"))) {
 		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
