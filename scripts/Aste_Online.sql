@@ -48,21 +48,12 @@ DROP TABLE IF EXISTS `Auth`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Auth` (
-  `Username` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Password` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Role` enum('amministratore','utente') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Username` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Password` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Ruolo` enum('amministratore','utente') COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Auth`
---
-
-LOCK TABLES `Auth` WRITE;
-/*!40000 ALTER TABLE `Auth` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Auth` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `CarteCredito`
@@ -82,15 +73,6 @@ CREATE TABLE `CarteCredito` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `CarteCredito`
---
-
-LOCK TABLES `CarteCredito` WRITE;
-/*!40000 ALTER TABLE `CarteCredito` DISABLE KEYS */;
-/*!40000 ALTER TABLE `CarteCredito` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Categorie`
 --
 
@@ -104,15 +86,6 @@ CREATE TABLE `Categorie` (
   PRIMARY KEY (`PrimoLivello`,`SecondoLivello`,`TerzoLivello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Categorie`
---
-
-LOCK TABLES `Categorie` WRITE;
-/*!40000 ALTER TABLE `Categorie` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Categorie` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -151,15 +124,6 @@ CREATE TABLE `Controfferte` (
   CONSTRAINT `Controfferte_ibfk_2` FOREIGN KEY (`Oggetto`) REFERENCES `Oggetti` (`Codice`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Controfferte`
---
-
-LOCK TABLES `Controfferte` WRITE;
-/*!40000 ALTER TABLE `Controfferte` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Controfferte` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -197,15 +161,6 @@ CREATE TABLE `Offerte` (
   CONSTRAINT `Offerte_ibfk_2` FOREIGN KEY (`Oggetto`) REFERENCES `Oggetti` (`Codice`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Offerte`
---
-
-LOCK TABLES `Offerte` WRITE;
-/*!40000 ALTER TABLE `Offerte` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Offerte` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -277,15 +232,6 @@ CREATE TABLE `Oggetti` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Oggetti`
---
-
-LOCK TABLES `Oggetti` WRITE;
-/*!40000 ALTER TABLE `Oggetti` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Oggetti` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Utenti`
 --
 
@@ -299,21 +245,12 @@ CREATE TABLE `Utenti` (
   `Indirizzo` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `DataNascita` date NOT NULL,
   `Città di nascita` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Username` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Username` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`CF`),
-  KEY `Utenti_ibfk_1` (`Username`),
+  KEY `Username` (`Username`),
   CONSTRAINT `Utenti_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `Auth` (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Utenti`
---
-
-LOCK TABLES `Utenti` WRITE;
-/*!40000 ALTER TABLE `Utenti` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Utenti` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Final view structure for view `Aste`
@@ -342,4 +279,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-13 14:37:25
+-- Dump completed on 2023-02-13 18:02:52
