@@ -35,20 +35,19 @@ static bool offer(void)
 
 	do_fai_offerta("1234567890123456", import, object_code);
 
-	yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', false, true);
-	
+	if (yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', true, true))
+		set_controffer(object_code);
+
 	return false;
 }
 
 
-static bool set_controffer(code_t object_code)
+static void set_controffer(code_t object_code)
 {
 	float import;
 	
 	get_number("Insert import: ", "%f", &import);
 	do_imposta_controfferta("1234567890123456", import, object_code);
-	
-	return false;
 }
 
 
