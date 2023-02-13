@@ -42,20 +42,44 @@ void view_registration(credentials_t *cred, user_t *user, credit_card_t *credit_
 	puts("**************************************\n");
 	get_input("Username: ", USERNAME_LEN, cred->username, false);
 	get_input("Password: ", PASSWORD_LEN, cred->password, true);
-	get_input("CF: ", CF_LEN, user->cf, false);
-	validate_cf(user->cf);
+
+	while(true) {
+		if(validate_cf(get_input("CF: ", CF_LEN, user->cf, false)))
+			break;
+		fprintf(stderr, "Invalid date!\n");
+	}
+
 	get_input("Name: ", NOME_LEN, user->name, false);
 	get_input("Surname: ", NOME_LEN, user->surname, false);
 	get_input("Address: ", ADDRESS_LEN, user->address, false);
-	get_input("Birthday: ", DATE_LEN, user->birthday, false);
-	validate_date(user->birthday);
+
+	while(true) {
+		if(validate_date(get_input("Birthday [YYYY-MM-DD]: ", DATE_LEN, user->birthday, false)))
+			break;
+		fprintf(stderr, "Invalid date!\n");
+	}
+
 	get_input("Birthcity: ", CITY_NAME_LEN, user->birthcity, false);
-	get_input("Credit Card Number: ", CREDIT_CARD_NUMBER_LEN, credit_card->number, false);
-	get_input("Credit Card CVV: ", sizeof(cvv)/sizeof(cvv[0]), cvv, false);
-	validate_cvv(cvv);
+
+	while(true) {
+		if(validate_credit_card_number(get_input("Credit Card Number [XXXX-XXXX-XXXX-XXXX]: ", CREDIT_CARD_NUMBER_LEN, credit_card->number, false)))
+			break;
+		fprintf(stderr, "Invalid date!\n");
+	}
+
+	while(true) {
+		if(validate_cvv(get_input("Credit Card CVV [XXX]: ", sizeof(cvv)/sizeof(cvv[0]), cvv, false)))
+			break;
+		fprintf(stderr, "Invalid date!\n");
+	}
+
 	credit_card->cvv = atoi(cvv);
-	get_input("Credit Card Expiration Date: ", DATE_LEN, credit_card->expiration_date, false);
-	validate_date(credit_card->expiration_date);
+
+	while(true) {
+		if(validate_date(get_input("Credit Card Expiration Date [YYYY-MM-DD]: ", DATE_LEN, credit_card->expiration_date, false)))
+			break;
+		fprintf(stderr, "Invalid date!\n");
+	}
 }
 
 bool ask_for_relogin(void)
