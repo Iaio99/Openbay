@@ -2,6 +2,7 @@
 
 #include "login.h"
 #include "../utils/io.h"
+#include "../utils/validation.h"
 
 int get_login_action()
 {
@@ -42,15 +43,19 @@ void view_registration(credentials_t *cred, user_t *user, credit_card_t *credit_
 	get_input("Username: ", USERNAME_LEN, cred->username, false);
 	get_input("Password: ", PASSWORD_LEN, cred->password, true);
 	get_input("CF: ", CF_LEN, user->cf, false);
+	validate_cf(user->cf);
 	get_input("Name: ", NOME_LEN, user->name, false);
 	get_input("Surname: ", NOME_LEN, user->surname, false);
 	get_input("Address: ", ADDRESS_LEN, user->address, false);
 	get_input("Birthday: ", DATE_LEN, user->birthday, false);
+	validate_date(user->birthday);
 	get_input("Birthcity: ", CITY_NAME_LEN, user->birthcity, false);
 	get_input("Credit Card Number: ", CREDIT_CARD_NUMBER_LEN, credit_card->number, false);
 	get_input("Credit Card CVV: ", sizeof(cvv)/sizeof(cvv[0]), cvv, false);
+	validate_cvv(cvv);
 	credit_card->cvv = atoi(cvv);
 	get_input("Credit Card Expiration Date: ", DATE_LEN, credit_card->expiration_date, false);
+	validate_date(credit_card->expiration_date);
 }
 
 bool ask_for_relogin(void)
