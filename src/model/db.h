@@ -5,8 +5,8 @@
 #define DATE_LEN 11
 #define TIME_LEN 6
 #define DATETIME_LEN (DATE_LEN + TIME_LEN)
-#define USERNAME_LEN 32
-#define PASSWORD_LEN 32
+#define USERNAME_LEN 64
+#define PASSWORD_LEN 64
 #define NOME_LEN 32
 #define ADDRESS_LEN 64
 #define CF_LEN 16
