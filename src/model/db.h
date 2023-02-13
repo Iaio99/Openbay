@@ -28,6 +28,11 @@ typedef enum {
 	FAILED_LOGIN
 } role_t;
 
+struct login_data {
+	int role;
+	cf_t cf;
+};
+
 typedef struct credentials {
 	char username[USERNAME_LEN];
 	char password[PASSWORD_LEN];
@@ -82,7 +87,7 @@ extern bool init_db(void);
 extern void fini_db(void);
 
 //Login operations
-extern role_t attempt_login(credentials_t *cred);
+extern struct login_data attempt_login(credentials_t *cred);
 extern void do_user_registration(user_t user, credentials_t credentials, credit_card_t credit_card);
 extern void db_switch_to_login(void);
 extern void db_switch_to_user(void);

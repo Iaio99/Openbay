@@ -11,10 +11,11 @@
 	ATTENTION: "1234567890123456" IS JUST A PLACEHOLDER
 */
 
+cf_t user_cf;
 
 static bool user_aste(void)
 {
-	asta_t *aste = do_stato_aste_utente("1234567890123456");
+	asta_t *aste = do_stato_aste_utente(user_cf);
 	
 	if(aste != NULL) {
 		print_aste(aste);
@@ -33,7 +34,7 @@ static bool offer(void)
 	get_input("Insert object's code: ", CODE_LEN, object_code, false);
 	get_number("Insert import: ", "%f", &import);
 
-	do_fai_offerta("1234567890123456", import, object_code);
+	do_fai_offerta(user_cf, import, object_code);
 
 	if (yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', true, true))
 		set_controffer(object_code);
@@ -47,7 +48,7 @@ static void set_controffer(code_t object_code)
 	float import;
 	
 	get_number("Insert import: ", "%f", &import);
-	do_imposta_controfferta("1234567890123456", import, object_code);
+	do_imposta_controfferta(user_cf, import, object_code);
 }
 
 
@@ -94,9 +95,11 @@ static struct {
 };
 
 
-void user_controller(void)
+void user_controller(cf_t cf)
 {
 	db_switch_to_user();
+
+	strcpy(user_cf, cf);
 
 	while(true) {
 		int action = get_user_action();

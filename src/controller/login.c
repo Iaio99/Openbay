@@ -14,14 +14,14 @@ bool login(void)
 
 	view_login(&cred);
 
-	role_t role = attempt_login(&cred);
+	struct login_data data = attempt_login(&cred);
 
-	switch(role) {
+	switch(data.role) {
 		case ADMIN:
 			administrator_controller();
 			break;
 		case USER:
-			user_controller();
+			user_controller(data.cf);
 			break;
 		default:
 			return false;

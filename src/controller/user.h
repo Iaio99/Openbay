@@ -1,7 +1,7 @@
 #pragma once
 #include "../model/db.h"
 
-extern void user_controller(void);
+extern void user_controller(cf_t cf);
 static bool offer(void);
 static void set_controffer(code_t object_code);
 static bool user_aste(void);

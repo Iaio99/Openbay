@@ -164,45 +164,51 @@ void fini_db(void)
 }
 
 
-role_t attempt_login(credentials_t *cred)
+struct login_data attempt_login(credentials_t *cred)
 {
-	MYSQL_BIND param[3]; // Used both for input and output
-	int role = 0;
+	MYSQL_BIND param[4]; // Used both for input and output
+	struct login_data data;
+	data.role = 0;
+	memset(data.cf, 0, CF_LEN);
 
 	// Prepareparam parameters
 	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, cred->username, strlen(cred->username), 0);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, cred->password, strlen(cred->password), 0);
-	set_binding_param(&param[2], MYSQL_TYPE_LONG, &role, sizeof(role), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_LONG, &data.role, sizeof(data.role), 0);
+	set_binding_param(&param[4], MYSQL_TYPE_STRING, data.cf, CF_LEN, 0);
+
 
 	if(mysql_stmt_bind_param(login_procedure, param) != 0) {
  		// Note _param
 		print_stmt_error(login_procedure, "Could not bind parameters for login");
-		role = FAILED_LOGIN;
+		data.role = FAILED_LOGIN;
 		goto out;
 	}
 
 	// Run procedure
 	if(mysql_stmt_execute(login_procedure) != 0) {
 		print_stmt_error(login_procedure, "Could not execute login procedure");
-		role = FAILED_LOGIN;
+		data.role = FAILED_LOGIN;
 		goto out;
 	}
 
 	// Prepare output parameters
-	set_binding_param(&param[0], MYSQL_TYPE_LONG, &role, sizeof(role), 0);
+	set_binding_param(&param[0], MYSQL_TYPE_LONG, &data.role, sizeof(data.role), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_STRING, data.cf, CF_LEN, 0);
 
 	if(mysql_stmt_bind_result(login_procedure, param)) {
 		print_stmt_error(login_procedure, "Could not retrieve output parameter");
-		role = FAILED_LOGIN;
+		data.role = FAILED_LOGIN;
 		goto out;
 	}
 
 	// Retrieve output parameter
 	if(mysql_stmt_fetch(login_procedure)) {
 		print_stmt_error(login_procedure, "Could not buffer results");
-		role = FAILED_LOGIN;
+		data.role = FAILED_LOGIN;
 		goto out;
 	}
+
 
     out:
 	// Consume the possibly-returned table for the output parameter
@@ -210,7 +216,7 @@ role_t attempt_login(credentials_t *cred)
 
 	mysql_stmt_free_result(login_procedure);
 	mysql_stmt_reset(login_procedure);
-		return role;
+	return data;
 }
 
 
