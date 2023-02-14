@@ -10,6 +10,7 @@
 
 cf_t user_cf;
 
+
 static bool user_aste(void)
 {
 	asta_t *aste = do_stato_aste_utente(user_cf);
