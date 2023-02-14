@@ -15,9 +15,9 @@ int get_user_action(void)
 	puts("*        USER DASHBOARD         *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
-	puts("1) See status of my aste");
-	puts("2) See aste in doing");
-	puts("3) Do an offer");
+	puts("1) Do an offer");
+	puts("2) See status of my aste");
+	puts("3) See aste in doing");
 	puts("4) See objects aggiudicated");
 	puts("5) Quit");
 	puts("\033[0;0m");
