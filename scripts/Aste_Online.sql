@@ -96,7 +96,7 @@ CREATE TABLE `Categorie` (
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Categorie_BEFORE_INSERT` BEFORE INSERT ON `Categorie` FOR EACH ROW BEGIN
-	IF NEW.`PrimoLivello` = NEW.`SecondoLivello` OR NEW.`PrimoLivello` = `TerzoLivello` OR NEW.`SecondoLivello` = `TerzoLivello` THEN
+	IF NEW.`PrimoLivello` = NEW.`SecondoLivello` OR NEW.`PrimoLivello` = NEW.`TerzoLivello` OR NEW.`SecondoLivello` = NEW.`TerzoLivello` THEN
 		SIGNAL SQLSTATE '45001';
 	END IF;
 END */;;
@@ -218,7 +218,7 @@ CREATE TABLE `Oggetti` (
   `Larghezza` tinyint unsigned NOT NULL,
   `Altezza` tinyint unsigned NOT NULL,
   `Lunghezza` tinyint unsigned NOT NULL,
-  `Descrizione` blob NOT NULL,
+  `Descrizione` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `BaseAsta` float unsigned NOT NULL,
   `ScadenzaAsta` datetime NOT NULL,
   `NumeroOfferte` smallint unsigned NOT NULL,
@@ -265,7 +265,7 @@ CREATE TABLE `Utenti` (
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`giuliano`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,max(`Offerte`.`Importo`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Offerte` join `Oggetti` on((`Offerte`.`Oggetto` = `Oggetti`.`Codice`))) */;
+/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,max(`Offerte`.`Importo`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Oggetti` left join `Offerte` on((`Oggetti`.`Codice` = `Offerte`.`Oggetto`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -279,4 +279,4 @@ CREATE TABLE `Utenti` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-13 18:02:52
+-- Dump completed on 2023-02-14 18:52:55
