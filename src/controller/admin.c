@@ -20,15 +20,16 @@ char randchar(int first_letter, int last_letter)
 }
 
 
-void randcode(code_t *code)
+void randcode(code_t code)
 {
-	*code[0] = randchar('a', 'z');
-	*code[1] = randchar('a', 'z');
-	*code[2] = randchar('a', 'z');
-	*code[3] = '-';
-	*code[4] = randchar('0', '9');
-	*code[5] = randchar('0', '9');
-	*code[6] = randchar('0', '9');
+	code[0] = randchar('a', 'z');
+	code[1] = randchar('a', 'z');
+	code[2] = randchar('a', 'z');
+	code[3] = '-';
+	code[4] = randchar('0', '9');
+	code[5] = randchar('0', '9');
+	code[6] = randchar('0', '9');
+	printf(code);
 }
 
 
@@ -37,22 +38,26 @@ static bool add_new_object(void)
 	object_t object;
 	unsigned char duration;
 
-	randcode(&object.code);
+//	randcode(object.code);
+
+	memset(&object, 0, sizeof(object));
 
 	get_input("State: ", STATE_LEN, object.state, false);
 	get_number("Lenght: ", "%hu", &object.lenght);
 	get_number("Width: ", "%hu", &object.width);
 	get_number("Height: ", "%hu", &object.height);
 	get_input("Description: ", DESCRIPTION_LEN, object.description, false);
-	get_number("Base d'asta: ", "%hu", &object.start_price);
+	get_number("Base d'asta: ", "%f", &object.start_price);
 	get_input("First level of category: ", LEVEL_LEN, object.category.first_level, false);
 	get_input("Second level of category: ", LEVEL_LEN, object.category.second_level, false);
-	get_input("Third level of category:", LEVEL_LEN, object.category.third_level, false);
+	get_input("Third level of category: ", LEVEL_LEN, object.category.third_level, false);
 	
 	get_number("Asta Duration [1-7]: ", "%cu", &duration);
 
-	if (duration > 7 || duration < 1)
+	if (duration > '7' || duration < '1')
 		return false;
+
+	duration -= 48;
 
 	do_indici_asta(object, duration);
 

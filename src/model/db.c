@@ -78,7 +78,7 @@ static bool initialize_prepared_stmts(role_t for_role)
 			break;
 		
 		case ADMIN:
-			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
+			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
 				print_stmt_error(indici_asta, "Unable to initialize End Job statement\n");
 				return false;
 			}
@@ -302,30 +302,29 @@ void db_switch_to_user(void)
 
 void do_indici_asta(object_t object, unsigned char duration)
 {
-	MYSQL_BIND param[11];
+	MYSQL_BIND param[10];
 
 	// Prepareparam parameters
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, object.code, strlen(object.code), 0);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, object.state, strlen(object.state), 0);
-	set_binding_param(&param[2], MYSQL_TYPE_TINY, &object.lenght, sizeof(object.lenght), 1);
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &object.width, sizeof(object.width), 1);
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &object.height, sizeof(object.height), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_BLOB, object.description, strlen(object.description), 0);
-	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &object.start_price, sizeof(object.start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_TINY, &duration, sizeof(duration), 1);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, object.category.first_level, strlen(object.category.first_level), 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, object.category.second_level, strlen(object.category.second_level), 0);
-	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, object.category.third_level, strlen(object.category.third_level), 0);
+	set_binding_param(&param[0], MYSQL_TYPE_VAR_STRING, object.state, strlen(object.state), 0);
+	set_binding_param(&param[1], MYSQL_TYPE_TINY, &object.lenght, sizeof(object.lenght), 1);
+	set_binding_param(&param[2], MYSQL_TYPE_TINY, &object.width, sizeof(object.width), 1);
+	set_binding_param(&param[3], MYSQL_TYPE_TINY, &object.height, sizeof(object.height), 1);
+	set_binding_param(&param[4], MYSQL_TYPE_BLOB, object.description, strlen(object.description), 0);
+	set_binding_param(&param[5], MYSQL_TYPE_FLOAT, &object.start_price, sizeof(object.start_price), 1);
+	set_binding_param(&param[6], MYSQL_TYPE_TINY, &duration, sizeof(duration), 1);
+	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, object.category.first_level, strlen(object.category.first_level), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, object.category.second_level, strlen(object.category.second_level), 0);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, object.category.third_level, strlen(object.category.third_level), 0);
 
 	if(mysql_stmt_bind_param(indici_asta, param) != 0) {
  		// Note _param
-		print_stmt_error(indici_asta, "Could not bind parameters for Add Lesson");
+		print_stmt_error(indici_asta, "Could not bind parameters for indici_asta");
 		return;
 	}
 
 	// Run procedure
 	if(mysql_stmt_execute(indici_asta) != 0) {
-		print_stmt_error(indici_asta, "Could not execute Add Lesson procedure");
+		print_stmt_error(indici_asta, "Could not execute indici_asta procedure");
 		return;
 	}
 
@@ -452,6 +451,8 @@ asta_t *do_stato_aste_utente(cf_t user)
 	set_binding_param(&param[11], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
 	set_binding_param(&param[12], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
+	param[12].is_null = (my_bool *)1;
+
 	if(mysql_stmt_bind_param(stato_aste_utente, param)) {
 		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for stato_aste_utente\n");
 		free(aste);
@@ -488,6 +489,8 @@ asta_t *do_stato_aste_utente(cf_t user)
 	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
 	set_binding_param(&param[12], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
+
+	param[12].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_result(stato_aste_utente, param)) {
 		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for get aste\n");
@@ -559,6 +562,8 @@ asta_t *do_visualizza_aste_passate()
 	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
 
+	param[12].is_null = (my_bool *)1;
+
 	if(mysql_stmt_bind_param(visualizza_aste_passate, param)) {
 		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
 		free(aste);
@@ -595,6 +600,8 @@ asta_t *do_visualizza_aste_passate()
 	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
+
+	param[12].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_result(visualizza_aste_passate, param)) {
 		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
@@ -635,7 +642,7 @@ asta_t *do_visualizza_oggetti_asta()
 {
 	int status;
 	size_t row = 0;
-	MYSQL_BIND param[12];
+	MYSQL_BIND param[13];
 
 	code_t code;
 	char state[32];
@@ -644,6 +651,7 @@ asta_t *do_visualizza_oggetti_asta()
 	unsigned short int height;
 	char description[65535];
 	float start_price;
+	MYSQL_TIME end_asta;
 	char first_level[LEVEL_LEN];
 	char second_level[LEVEL_LEN];
 	char third_level[LEVEL_LEN];
@@ -652,7 +660,6 @@ asta_t *do_visualizza_oggetti_asta()
 
 	asta_t *aste = NULL;
 
-
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, 32, 0);
 	set_binding_param(&param[2], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
@@ -660,11 +667,14 @@ asta_t *do_visualizza_oggetti_asta()
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
 	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
+	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
+	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
+	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
+
+//	param[11].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_param(visualizza_oggetti_asta, param)) {
 		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for get aste\n");
@@ -697,11 +707,14 @@ asta_t *do_visualizza_oggetti_asta()
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
 	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
+	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
+	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
+	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
+
+//	param[11].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_result(visualizza_oggetti_asta, param)) {
 		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta\n");
@@ -723,14 +736,16 @@ asta_t *do_visualizza_oggetti_asta()
 		aste->aste[row].object.height = height;
 		strcpy(aste->aste[row].object.description, description);
 		aste->aste[row].object.start_price = start_price;
+		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
 		strcpy(aste->aste[row].object.category.first_level, first_level);
 		strcpy(aste->aste[row].object.category.second_level, second_level);
 		strcpy(aste->aste[row].object.category.third_level, third_level);
-		aste->aste[row].number_offers = number_offers;
 		aste->aste[row].max_offer = max_offer;
+		aste->aste[row].number_offers = number_offers;
 
 		row++;
 	}
+	printf("PLUTO\n");
     out:
 	mysql_stmt_free_result(visualizza_oggetti_asta);
 	mysql_stmt_reset(visualizza_oggetti_asta);

@@ -9,9 +9,9 @@
 #define PASSWORD_LEN 64
 #define NOME_LEN 32
 #define ADDRESS_LEN 64
-#define CF_LEN 16
-#define CODE_LEN 7
-#define CREDIT_CARD_NUMBER_LEN 19
+#define CF_LEN 17
+#define CODE_LEN 8
+#define CREDIT_CARD_NUMBER_LEN 20
 #define LEVEL_LEN 32
 #define CITY_NAME_LEN 32
 #define DESCRIPTION_LEN 65535
@@ -74,6 +74,7 @@ struct asta_entry {
 	object_t object;
 	float max_offer;
 	unsigned short int number_offers;
+	char end[DATETIME_LEN];
 };
 
 typedef struct asta {
