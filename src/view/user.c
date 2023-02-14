@@ -32,7 +32,7 @@ void print_aste(asta_t *aste)
 	printf("** test **\n\n");
 
 	for(size_t i = 0; i < aste->num_entries; i++) {
-		printf("%s %s %hu %hu %hu %hu %s %f %s %s %s %hu %f\n",
+		printf("%s %s %hu %hu %hu %s %.2f %s %s %s %s %.2f %hu\n",
 			aste->aste[i].object.code,
 			aste->aste[i].object.state,
 			aste->aste[i].object.lenght,
@@ -40,11 +40,12 @@ void print_aste(asta_t *aste)
 			aste->aste[i].object.height,
 			aste->aste[i].object.description,
 			aste->aste[i].object.start_price,
+			aste->aste[i].end,
 			aste->aste[i].object.category.first_level,
 			aste->aste[i].object.category.second_level,
 			aste->aste[i].object.category.third_level,
-			aste->aste[i].number_offers,
-			aste->aste[i].max_offer
+			aste->aste[i].max_offer,
+			aste->aste[i].number_offers
 		);
 	}
 }
