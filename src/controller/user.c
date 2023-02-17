@@ -53,7 +53,7 @@ static bool aste_in(void)
 	asta_t *aste = do_visualizza_oggetti_asta();
 	
 	if(aste != NULL) {
-		print_aste(aste);
+		print_aste(aste, "ASTE IN DOING");
 		aste_dispose(aste);
 	}
 	
@@ -66,7 +66,7 @@ static bool aste_done(void)
 	asta_t *aste = do_visualizza_aste_passate();
 	
 	if(aste != NULL) {
-		print_aste(aste);
+		print_aste(aste, "ASTE FINISHED");
 		aste_dispose(aste);
 	}
 	
