@@ -12,4 +12,5 @@ enum actions {
 
 extern int get_user_action(void);
 
-void print_aste();
+void print_aste(asta_t *aste);
+void print_my_aste(asta_t *aste);

@@ -16,7 +16,7 @@ static bool user_aste(void)
 	asta_t *aste = do_stato_aste_utente(user_cf);
 	
 	if(aste != NULL) {
-		print_aste(aste);
+		print_my_aste(aste);
 		aste_dispose(aste);
 	}
 	

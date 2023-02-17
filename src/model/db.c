@@ -68,45 +68,45 @@ static bool initialize_prepared_stmts(role_t for_role)
 
 		case LOGIN_ROLE:
 			if(!setup_prepared_stmt(&login_procedure, "call login(?, ?, ?, ?)", conn)) {
-				print_stmt_error(login_procedure, "Unable to initialize Login statement\n");
+				print_stmt_error(login_procedure, "Unable to initialize login statement\n");
 				return false;
 			}
 			if(!setup_prepared_stmt(&user_registration, "call user_registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(user_registration, "Unable to initialize Info Corso statement\n");
+				print_stmt_error(user_registration, "Unable to initialize user_registration statement\n");
 				return false;
 			}
 			break;
 		
 		case ADMIN:
 			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(indici_asta, "Unable to initialize End Job statement\n");
+				print_stmt_error(indici_asta, "Unable to initialize indici_asta statement\n");
 				return false;
 			}
 			if(!setup_prepared_stmt(&inserisci_categoria, "call inserisci_categoria(?, ?, ?)", conn)) {
-				print_stmt_error(inserisci_categoria, "Unable to initialize Add Title statement\n");
+				print_stmt_error(inserisci_categoria, "Unable to initialize inserisci_categoria statement\n");
 				return false;
 			}
 			break;
 
 		case USER:
 			if(!setup_prepared_stmt(&fai_offerta, "call fai_offerta(?, ?, ?)", conn)) {
-				print_stmt_error(fai_offerta, "Unable to initialize register Info Piscine statement\n");
+				print_stmt_error(fai_offerta, "Unable to initialize register fai_offerta statement\n");
 				return false;
 			}
 			if(!setup_prepared_stmt(&imposta_controfferta, "call imposta_controfferta(?, ?, ?)", conn)) {
-				print_stmt_error(imposta_controfferta, "Unable to initialize Info Corso statement\n");
+				print_stmt_error(imposta_controfferta, "Unable to initialize imposta_controfferta statement\n");
 				return false;
 			}
-			if(!setup_prepared_stmt(&stato_aste_utente, "call stato_aste_utente(?)", conn)) {
-				print_stmt_error(stato_aste_utente, "Unable to initialize register Info Piscine statement\n");
+			if(!setup_prepared_stmt(&stato_aste_utente, "call stato_aste_utente(?, ?, ?, ?, ?, ?)", conn)) {
+				print_stmt_error(stato_aste_utente, "Unable to initialize register stato_aste_utente statement\n");
 				return false;
 			}
 			if(!setup_prepared_stmt(&visualizza_aste_passate, "call visualizza_aste_passate()", conn)) {
-				print_stmt_error(visualizza_aste_passate, "Unable to initialize register Info Piscine statement\n");
+				print_stmt_error(visualizza_aste_passate, "Unable to initialize register isualizza_aste_passate statement\n");
 				return false;
 			}
 			if(!setup_prepared_stmt(&visualizza_oggetti_asta, "call visualizza_oggetti_asta()", conn)) {
-				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize Info Corso statement\n");
+				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize visualizza_oggetti_asta statement\n");
 				return false;
 			}		
 			break;
@@ -405,7 +405,7 @@ extern void do_fai_offerta(cf_t user, float import, code_t object)
 
 	// Run procedure
 	if(mysql_stmt_execute(fai_offerta) != 0) {
-		print_stmt_error(fai_offerta, "Could not execute Add Lesson procedure");
+		print_stmt_error(fai_offerta, "Could not execute fai_offerta procedure");
 		return;
 	}
 
@@ -419,39 +419,22 @@ asta_t *do_stato_aste_utente(cf_t user)
 {
 	int status;
 	size_t row = 0;
-	MYSQL_BIND param[13];
+	MYSQL_BIND param[6];
 
 	code_t code;
-	char state[32];
-	unsigned short int lenght;
-	unsigned short int width;
-	unsigned short int height;
-	char description[65535];
-	float start_price;
-	char first_level[LEVEL_LEN];
-	char second_level[LEVEL_LEN];
-	char third_level[LEVEL_LEN];
+	char description[DESCRIPTION_LEN];
 	unsigned short int number_offers;
 	float max_offer;
+	MYSQL_TIME end_asta;
 
 	asta_t *aste = NULL;
-	
 
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, user, strlen(user), 0);
 	set_binding_param(&param[1], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, state, 32, 0);
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[6], MYSQL_TYPE_BLOB, description, 65535, 0);
-	set_binding_param(&param[7], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[11], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
-	set_binding_param(&param[12], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
-
-	param[12].is_null = (my_bool *)1;
+	set_binding_param(&param[2], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
+	set_binding_param(&param[3], MYSQL_TYPE_TIMESTAMP, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[4], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
+	set_binding_param(&param[5], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
 	if(mysql_stmt_bind_param(stato_aste_utente, param)) {
 		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for stato_aste_utente\n");
@@ -477,20 +460,11 @@ asta_t *do_stato_aste_utente(cf_t user)
 	// Get bound parameters
 	mysql_stmt_store_result(stato_aste_utente);
 	
-	set_binding_param(&param[1], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, state, 32, 0);
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[6], MYSQL_TYPE_BLOB, description, 65535, 0);
-	set_binding_param(&param[7], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[11], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
-	set_binding_param(&param[12], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
-
-	param[12].is_null = (my_bool *)1;
+	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
+	set_binding_param(&param[1], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
+	set_binding_param(&param[2], MYSQL_TYPE_DATETIME, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[3], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
+	set_binding_param(&param[4], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
 	if(mysql_stmt_bind_result(stato_aste_utente, param)) {
 		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for get aste\n");
@@ -506,15 +480,8 @@ asta_t *do_stato_aste_utente(cf_t user)
 			break;
 
 		strcpy(aste->aste[row].object.code, code);
-		strcpy(aste->aste[row].object.state, state);
-		aste->aste[row].object.lenght = lenght;
-		aste->aste[row].object.width = width;
-		aste->aste[row].object.height = height;
 		strcpy(aste->aste[row].object.description, description);
-		aste->aste[row].object.start_price = start_price;
-		strcpy(aste->aste[row].object.category.first_level, first_level);
-		strcpy(aste->aste[row].object.category.second_level, second_level);
-		strcpy(aste->aste[row].object.category.third_level, third_level);
+		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
 		aste->aste[row].number_offers = number_offers;
 		aste->aste[row].max_offer = max_offer;
 
@@ -534,35 +501,20 @@ asta_t *do_visualizza_aste_passate()
 	MYSQL_BIND param[13];
 
 	code_t code;
-	char state[32];
+	char state[STATE_LEN];
 	unsigned short int lenght;
 	unsigned short int width;
 	unsigned short int height;
-	char description[65535];
+	char description[DESCRIPTION_LEN];
 	float start_price;
 	char first_level[LEVEL_LEN];
 	char second_level[LEVEL_LEN];
 	char third_level[LEVEL_LEN];
 	unsigned short int number_offers;
 	float max_offer;
+	MYSQL_TIME end_asta;
 
 	asta_t *aste = NULL;
-
-
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, 32, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
-	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
-	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
-
-	param[12].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_param(visualizza_aste_passate, param)) {
 		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
@@ -587,21 +539,20 @@ asta_t *do_visualizza_aste_passate()
 
 	// Get bound parameters
 	mysql_stmt_store_result(visualizza_aste_passate);
-	
+
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, 32, 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, STATE_LEN, 0);
 	set_binding_param(&param[2], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
 	set_binding_param(&param[3], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
+	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
+	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
+	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
+	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
-
-	param[12].is_null = (my_bool *)1;
+	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 
 	if(mysql_stmt_bind_result(visualizza_aste_passate, param)) {
 		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
@@ -623,6 +574,7 @@ asta_t *do_visualizza_aste_passate()
 		aste->aste[row].object.height = height;
 		strcpy(aste->aste[row].object.description, description);
 		aste->aste[row].object.start_price = start_price;
+		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
 		strcpy(aste->aste[row].object.category.first_level, first_level);
 		strcpy(aste->aste[row].object.category.second_level, second_level);
 		strcpy(aste->aste[row].object.category.third_level, third_level);
@@ -645,11 +597,11 @@ asta_t *do_visualizza_oggetti_asta()
 	MYSQL_BIND param[13];
 
 	code_t code;
-	char state[32];
+	char state[STATE_LEN];
 	unsigned short int lenght;
 	unsigned short int width;
 	unsigned short int height;
-	char description[65535];
+	char description[DESCRIPTION_LEN];
 	float start_price;
 	MYSQL_TIME end_asta;
 	char first_level[LEVEL_LEN];
@@ -659,22 +611,6 @@ asta_t *do_visualizza_oggetti_asta()
 	float max_offer;
 
 	asta_t *aste = NULL;
-
-	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, 32, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
-	set_binding_param(&param[3], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
-	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
-	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
-	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
-	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
-	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
-	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
-	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
-
-//	param[11].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_param(visualizza_oggetti_asta, param)) {
 		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for get aste\n");
@@ -701,11 +637,11 @@ asta_t *do_visualizza_oggetti_asta()
 	mysql_stmt_store_result(visualizza_oggetti_asta);
 	
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, 32, 0);
+	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, STATE_LEN, 0);
 	set_binding_param(&param[2], MYSQL_TYPE_TINY, &lenght, sizeof(lenght), 1);
 	set_binding_param(&param[3], MYSQL_TYPE_TINY, &width, sizeof(width), 1);
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
-	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, 65535, 0);
+	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
 	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
 	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
@@ -713,8 +649,6 @@ asta_t *do_visualizza_oggetti_asta()
 	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
 	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
-
-//	param[11].is_null = (my_bool *)1;
 
 	if(mysql_stmt_bind_result(visualizza_oggetti_asta, param)) {
 		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta\n");

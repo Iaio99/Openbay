@@ -49,3 +49,19 @@ void print_aste(asta_t *aste)
 		);
 	}
 }
+
+void print_my_aste(asta_t *aste)
+{
+	clear_screen();
+	printf("** test **\n\n");
+
+	for(size_t i = 0; i < aste->num_entries; i++) {
+		printf("%s %s %s %.2f %hu\n",
+			aste->aste[i].object.code,
+			aste->aste[i].object.description,
+			aste->aste[i].end,
+			aste->aste[i].max_offer,
+			aste->aste[i].number_offers
+		);
+	}
+}
