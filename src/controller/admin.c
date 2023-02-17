@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "admin.h"
 #include "../model/db.h"
@@ -10,35 +9,10 @@
 #include "../utils/io.h"
 
 
-char randchar(int first_letter, int last_letter)
-{
-	char c;
-	srand(time(NULL));
-	c = rand() % (last_letter + 1 - first_letter) + first_letter;
-
-	return c;
-}
-
-
-void randcode(code_t code)
-{
-	code[0] = randchar('a', 'z');
-	code[1] = randchar('a', 'z');
-	code[2] = randchar('a', 'z');
-	code[3] = '-';
-	code[4] = randchar('0', '9');
-	code[5] = randchar('0', '9');
-	code[6] = randchar('0', '9');
-	printf(code);
-}
-
-
 static bool add_new_object(void)
 {
 	object_t object;
 	unsigned char duration;
-
-//	randcode(object.code);
 
 	memset(&object, 0, sizeof(object));
 
