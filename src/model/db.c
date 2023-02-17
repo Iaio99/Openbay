@@ -68,51 +68,51 @@ static bool initialize_prepared_stmts(role_t for_role)
 
 		case LOGIN_ROLE:
 			if(!setup_prepared_stmt(&login_procedure, "call login(?, ?, ?, ?)", conn)) {
-				print_stmt_error(login_procedure, "Unable to initialize login statement\n");
+				print_stmt_error(login_procedure, "Unable to initialize login statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&user_registration, "call user_registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(user_registration, "Unable to initialize user_registration statement\n");
+				print_stmt_error(user_registration, "Unable to initialize user_registration statement");
 				return false;
 			}
 			break;
 		
 		case ADMIN:
 			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(indici_asta, "Unable to initialize indici_asta statement\n");
+				print_stmt_error(indici_asta, "Unable to initialize indici_asta statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&inserisci_categoria, "call inserisci_categoria(?, ?, ?)", conn)) {
-				print_stmt_error(inserisci_categoria, "Unable to initialize inserisci_categoria statement\n");
+				print_stmt_error(inserisci_categoria, "Unable to initialize inserisci_categoria statement");
 				return false;
 			}
 			break;
 
 		case USER:
 			if(!setup_prepared_stmt(&fai_offerta, "call fai_offerta(?, ?, ?)", conn)) {
-				print_stmt_error(fai_offerta, "Unable to initialize register fai_offerta statement\n");
+				print_stmt_error(fai_offerta, "Unable to initialize register fai_offerta statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&imposta_controfferta, "call imposta_controfferta(?, ?, ?)", conn)) {
-				print_stmt_error(imposta_controfferta, "Unable to initialize imposta_controfferta statement\n");
+				print_stmt_error(imposta_controfferta, "Unable to initialize imposta_controfferta statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&stato_aste_utente, "call stato_aste_utente(?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(stato_aste_utente, "Unable to initialize register stato_aste_utente statement\n");
+				print_stmt_error(stato_aste_utente, "Unable to initialize register stato_aste_utente statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&visualizza_aste_passate, "call visualizza_aste_passate()", conn)) {
-				print_stmt_error(visualizza_aste_passate, "Unable to initialize register isualizza_aste_passate statement\n");
+				print_stmt_error(visualizza_aste_passate, "Unable to initialize register isualizza_aste_passate statement");
 				return false;
 			}
 			if(!setup_prepared_stmt(&visualizza_oggetti_asta, "call visualizza_oggetti_asta()", conn)) {
-				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize visualizza_oggetti_asta statement\n");
+				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize visualizza_oggetti_asta statement");
 				return false;
 			}		
 			break;
 
 		default:
-			fprintf(stderr, "[FATAL] Unexpected role to prepare statements.\n");
+			fprintf(stderr, "[FATAL] Unexpected role to prepare statements.");
 			exit(EXIT_FAILURE);
 	}
 
@@ -128,13 +128,13 @@ bool init_db(void)
 	conn = mysql_init(NULL);
 
 	if(conn == NULL) {
-		finish_with_error(conn, "mysql_init() failed (probably out of memory)\n");
+		finish_with_error(conn, "mysql_init() failed (probably out of memory)");
 	}
 
 	if(mysql_real_connect(conn, getenv("HOST"), getenv("LOGIN_USER"), getenv("LOGIN_PASS"), getenv("DB"),
 			      atoi(getenv("PORT")), NULL,
 			      CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS | CLIENT_COMPRESS | CLIENT_INTERACTIVE | CLIENT_REMEMBER_OPTIONS) == NULL) {
-		finish_with_error(conn, "mysql_real_connect() failed\n");
+		finish_with_error(conn, "mysql_real_connect() failed");
 	}
 
 	if (mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &timeout)) {
@@ -262,11 +262,11 @@ void db_switch_to_login(void)
 {
 	close_prepared_stmts();
 	if(mysql_change_user(conn, getenv("LOGIN_USER"), getenv("LOGIN_PASS"), getenv("DB"))) {
-		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
+		fprintf(stderr, "mysql_change_user() failed: %s", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
 	if(!initialize_prepared_stmts(LOGIN_ROLE)) {
-		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
+		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -276,11 +276,11 @@ void db_switch_to_administrator(void)
 {
 	close_prepared_stmts();
 	if(mysql_change_user(conn, getenv("ADMIN_USER"), getenv("ADMIN_PASS"), getenv("DB"))) {
-		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
+		fprintf(stderr, "mysql_change_user() failed: %s", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
 	if(!initialize_prepared_stmts(ADMIN)) {
-		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
+		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -290,11 +290,11 @@ void db_switch_to_user(void)
 {
 	close_prepared_stmts();
 	if(mysql_change_user(conn, getenv("USER_USER"), getenv("USER_PASS"), getenv("DB"))) {
-		fprintf(stderr, "mysql_change_user() failed: %s\n", mysql_error(conn));
+		fprintf(stderr, "mysql_change_user() failed: %s", mysql_error(conn));
 		exit(EXIT_FAILURE);
 	}
 	if(!initialize_prepared_stmts(USER)) {
-		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.\n");
+		fprintf(stderr, "[FATAL] Cannot initialize prepared statements.");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -345,13 +345,13 @@ void do_inserisci_categoria(category_t category)
 
 	if(mysql_stmt_bind_param(inserisci_categoria, param) != 0) {
  		// Note _param
-		print_stmt_error(inserisci_categoria, "Could not bind parameters for Add Lesson");
+		print_stmt_error(inserisci_categoria, "Could not bind parameters for inserisci_categoria");
 		return;
 	}
 
 	// Run procedure
 	if(mysql_stmt_execute(inserisci_categoria) != 0) {
-		print_stmt_error(inserisci_categoria, "Could not execute Add Lesson procedure");
+		print_stmt_error(inserisci_categoria, "Could not execute inserisci_categoria procedure");
 		return;
 	}
 
@@ -370,25 +370,25 @@ extern void do_imposta_controfferta(cf_t user, float import, code_t object)
 	set_binding_param(&param[1], MYSQL_TYPE_FLOAT, &import, sizeof(import), 1);
 	set_binding_param(&param[2], MYSQL_TYPE_STRING, object, strlen(object), 0);
 
-	if(mysql_stmt_bind_param(fai_offerta, param) != 0) {
+	if(mysql_stmt_bind_param(imposta_controfferta, param) != 0) {
  		// Note _param
-		print_stmt_error(fai_offerta, "Could not bind parameters for imposta_controfferta");
+		print_stmt_error(imposta_controfferta, "Could not bind parameters for imposta_controfferta");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(fai_offerta) != 0) {
-		print_stmt_error(fai_offerta, "Could not execute Add Lesson procedure");
+	if(mysql_stmt_execute(imposta_controfferta) != 0) {
+		print_stmt_error(imposta_controfferta, "Could not execute imposta_controfferta procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(fai_offerta);
-	mysql_stmt_reset(fai_offerta);
+	mysql_stmt_free_result(imposta_controfferta);
+	mysql_stmt_reset(imposta_controfferta);
 	return;
 }
 
 
-extern void do_fai_offerta(cf_t user, float import, code_t object)
+extern bool do_fai_offerta(cf_t user, float import, code_t object)
 {
 	MYSQL_BIND param[3];
 
@@ -400,18 +400,18 @@ extern void do_fai_offerta(cf_t user, float import, code_t object)
 	if(mysql_stmt_bind_param(fai_offerta, param) != 0) {
  		// Note _param
 		print_stmt_error(fai_offerta, "Could not bind parameters for fai_offerta");
-		return;
+		return false;
 	}
 
 	// Run procedure
 	if(mysql_stmt_execute(fai_offerta) != 0) {
 		print_stmt_error(fai_offerta, "Could not execute fai_offerta procedure");
-		return;
+		return false;
 	}
 
 	mysql_stmt_free_result(fai_offerta);
 	mysql_stmt_reset(fai_offerta);
-	return;
+	return true;
 }
 
 
@@ -437,7 +437,7 @@ asta_t *do_stato_aste_utente(cf_t user)
 	set_binding_param(&param[5], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
 	if(mysql_stmt_bind_param(stato_aste_utente, param)) {
-		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for stato_aste_utente\n");
+		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for stato_aste_utente");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -467,7 +467,7 @@ asta_t *do_stato_aste_utente(cf_t user)
 	set_binding_param(&param[4], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
 	if(mysql_stmt_bind_result(stato_aste_utente, param)) {
-		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for get aste\n");
+		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for get aste");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -517,7 +517,7 @@ asta_t *do_visualizza_aste_passate()
 	asta_t *aste = NULL;
 
 	if(mysql_stmt_bind_param(visualizza_aste_passate, param)) {
-		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
+		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -555,7 +555,7 @@ asta_t *do_visualizza_aste_passate()
 	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 
 	if(mysql_stmt_bind_result(visualizza_aste_passate, param)) {
-		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate\n");
+		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -613,7 +613,7 @@ asta_t *do_visualizza_oggetti_asta()
 	asta_t *aste = NULL;
 
 	if(mysql_stmt_bind_param(visualizza_oggetti_asta, param)) {
-		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for get aste\n");
+		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -621,7 +621,7 @@ asta_t *do_visualizza_oggetti_asta()
 
 	// Run procedure
 	if(mysql_stmt_execute(visualizza_oggetti_asta) != 0) {
-		print_stmt_error(visualizza_oggetti_asta, "Could not execute get aste procedure");
+		print_stmt_error(visualizza_oggetti_asta, "Could not execute visualizza_oggetti_asta procedure");
 		goto out;
 	}
 
@@ -651,7 +651,7 @@ asta_t *do_visualizza_oggetti_asta()
 	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 
 	if(mysql_stmt_bind_result(visualizza_oggetti_asta, param)) {
-		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta\n");
+		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta");
 		free(aste);
 		aste = NULL;
 		goto out;
@@ -679,7 +679,7 @@ asta_t *do_visualizza_oggetti_asta()
 
 		row++;
 	}
-	printf("PLUTO\n");
+	printf("PLUTO");
     out:
 	mysql_stmt_free_result(visualizza_oggetti_asta);
 	mysql_stmt_reset(visualizza_oggetti_asta);

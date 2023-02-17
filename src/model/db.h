@@ -95,7 +95,7 @@ extern void db_switch_to_user(void);
 extern void db_switch_to_administrator(void);
 extern void do_indici_asta(object_t object, unsigned char duration);
 extern void do_inserisci_categoria(category_t category);
-extern void do_fai_offerta(cf_t user, float import, code_t object);
+extern bool do_fai_offerta(cf_t user, float import, code_t object);
 extern void do_imposta_controfferta(cf_t user, float import, code_t object);
 extern asta_t *do_stato_aste_utente(cf_t user);
 extern asta_t *do_visualizza_aste_passate();

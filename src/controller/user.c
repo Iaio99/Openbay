@@ -32,9 +32,7 @@ static bool offer(void)
 	get_input("Insert object's code: ", CODE_LEN, object_code, false);
 	get_number("Insert import: ", "%f", &import);
 
-	do_fai_offerta(user_cf, import, object_code);
-
-	if (yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', true, true))
+	if (do_fai_offerta(user_cf, import, object_code) && yes_or_no("Do you want to set a controffer on this object?", 'y', 'n', true, true))
 		set_controffer(object_code);
 
 	return false;
