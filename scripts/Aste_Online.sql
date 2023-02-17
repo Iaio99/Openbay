@@ -1,4 +1,4 @@
--- MariaDB dump 10.19  Distrib 10.9.5-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.10.3-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: Aste_Online
 -- ------------------------------------------------------
@@ -71,6 +71,25 @@ CREATE TABLE `CarteCredito` (
   CONSTRAINT `CarteCredito_ibfk_1` FOREIGN KEY (`Intestatario`) REFERENCES `Utenti` (`CF`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_number` BEFORE INSERT ON `CarteCredito` FOR EACH ROW BEGIN
+	IF NOT VALIDATE_CARD_NUMBER(NEW.Numero) THEN
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "Invalid input!";
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `Categorie`
@@ -166,20 +185,23 @@ CREATE TABLE `Offerte` (
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Assert_Importo` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
-	SET @base_asta := (SELECT BaseAsta FROM Oggetti WHERE Codice=New.Oggetto);
-	IF (NEW.Importo-@base_asta)%0.50 != 0 THEN
-		SIGNAL SQLSTATE '45001';
-	END IF;
-    
-	SET @offerta_massima := (SELECT MAX(`Importo`) FROM Offerte WHERE Oggetto=New.Oggetto);
-    IF @offerta_massima > new.Importo THEN
+	DECLARE offerta_max FLOAT UNSIGNED;
+	DECLARE increment FLOAT UNSIGNED;
+    SET offerta_max = OFFERTA_MAX(New.Oggetto);
+    SET increment = (CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5);
+
+    IF new.Importo < offerta_max THEN
 		SIGNAL SQLSTATE '45001';
     END IF;
+
+	IF increment != 0.0 THEN
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!";
+	END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -244,13 +266,32 @@ CREATE TABLE `Utenti` (
   `Cognome` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Indirizzo` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `DataNascita` date NOT NULL,
-  `Città di nascita` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `CittaNascita` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Username` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`CF`),
   KEY `Username` (`Username`),
   CONSTRAINT `Utenti_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `Auth` (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_input` BEFORE INSERT ON `Utenti` FOR EACH ROW BEGIN
+	IF NOT validate_cf(NEW.CF) THEN
+    	SIGNAL SQLSTATE "45001" set MESSAGE_TEXT = "Invalid input!";
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Final view structure for view `Aste`
@@ -265,7 +306,7 @@ CREATE TABLE `Utenti` (
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`giuliano`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,max(`Offerte`.`Importo`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Oggetti` left join `Offerte` on((`Oggetti`.`Codice` = `Offerte`.`Oggetto`))) */;
+/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,`OFFERTA_MAX`(`Oggetti`.`Codice`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Oggetti` left join `Offerte` on((`Oggetti`.`Codice` = `Offerte`.`Oggetto`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -279,4 +320,4 @@ CREATE TABLE `Utenti` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-14 18:52:55
+-- Dump completed on 2023-02-17 14:28:22
