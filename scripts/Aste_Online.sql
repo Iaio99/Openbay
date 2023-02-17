@@ -110,13 +110,13 @@ CREATE TABLE `Categorie` (
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Categorie_BEFORE_INSERT` BEFORE INSERT ON `Categorie` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_level_names` BEFORE INSERT ON `Categorie` FOR EACH ROW BEGIN
 	IF NEW.`PrimoLivello` = NEW.`SecondoLivello` OR NEW.`PrimoLivello` = NEW.`TerzoLivello` OR NEW.`SecondoLivello` = NEW.`TerzoLivello` THEN
-		SIGNAL SQLSTATE '45001';
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid input! The levels's names must be all different!";
 	END IF;
 END */;;
 DELIMITER ;
@@ -148,11 +148,32 @@ CREATE TABLE `Controfferte` (
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Controfferte_BEFORE_INSERT` BEFORE INSERT ON `Controfferte` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_controffer` BEFORE INSERT ON `Controfferte` FOR EACH ROW BEGIN
+	DECLARE increment FLOAT UNSIGNED;
+    DECLARE importo_controfferta FLOAT UNSIGNED;
+    DECLARE max_offerer CHAR(16);
+    
+    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING OFFERTA_MAX(Oggetto));
+    
+    IF NEW.Utente != max_offerer THEN
+    	SIGNAL SQLSTATE "45002" SET MESSAGE_TEXT = "[OfferError] You are not the max offerer!";
+    END IF;
+    
+    SET importo_controfferta = (SELECT Importo FROM Controfferte WHERE Oggetto = New.Oggetto);
+    
+    IF Importo_controfferta <= OFFERTA_MAX(New.Oggetto) THEN
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The controffer must be higher then max offer";
+    END IF;
+    
+    SET increment = CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5;
+    IF increment != 0.0 THEN
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The increment must a multiple of 0.50€!";
+    END IF;
+    
 	DELETE FROM Controfferte WHERE Oggetto=NEW.Oggetto;
 END */;;
 DELIMITER ;
@@ -189,18 +210,18 @@ CREATE TABLE `Offerte` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Assert_Importo` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_import` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
 	DECLARE offerta_max FLOAT UNSIGNED;
 	DECLARE increment FLOAT UNSIGNED;
     SET offerta_max = OFFERTA_MAX(New.Oggetto);
     SET increment = (CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5);
 
     IF new.Importo < offerta_max THEN
-		SIGNAL SQLSTATE '45001';
+		SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = "Your offer is too low!";
     END IF;
 
 	IF increment != 0.0 THEN
-		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!";
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!: The increment must be a multiple of 0.50€";
 	END IF;
 END */;;
 DELIMITER ;
@@ -213,11 +234,11 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `Aggiorna_Numero_Offerte` AFTER INSERT ON `Offerte` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `increment_offers_number` AFTER INSERT ON `Offerte` FOR EACH ROW BEGIN
 	SET @old_numero_offerte := (SELECT NumeroOfferte FROM Oggetti WHERE Codice=New.Oggetto);
     UPDATE Oggetti SET NumeroOfferte = @old_numero_offerte+1 WHERE Codice=New.Oggetto;
 END */;;
@@ -282,7 +303,7 @@ CREATE TABLE `Utenti` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_input` BEFORE INSERT ON `Utenti` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_cf` BEFORE INSERT ON `Utenti` FOR EACH ROW BEGIN
 	IF NOT validate_cf(NEW.CF) THEN
     	SIGNAL SQLSTATE "45001" set MESSAGE_TEXT = "Invalid input!";
     END IF;
@@ -320,4 +341,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-17 14:28:22
+-- Dump completed on 2023-02-17 16:33:10
