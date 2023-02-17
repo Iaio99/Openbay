@@ -29,7 +29,7 @@ int get_user_action(void)
 void print_aste(asta_t *aste, char *message)
 {
 	clear_screen();
-	printf("** %s  **\n\n", message);
+	printf("*** %s  ***\n\n", message);
 
 	for(size_t i = 0; i < aste->num_entries; i++) {
 		printf("%s %s %hu %hu %hu %s %.2f %s %s %s %s %.2f %hu\n",
@@ -53,7 +53,7 @@ void print_aste(asta_t *aste, char *message)
 void print_my_aste(asta_t *aste)
 {
 	clear_screen();
-	printf("** YOUR ASTE INFORMATIONS **\n\n");
+	puts("*** YOUR ASTE INFORMATIONS ***\n\n");
 
 	for(size_t i = 0; i < aste->num_entries; i++) {
 		printf("%s %s %s %.2f %hu\n",
