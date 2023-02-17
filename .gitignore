@@ -3,3 +3,4 @@ build/
 pms
 .env
 scripts/credentials.json
+consegna/
