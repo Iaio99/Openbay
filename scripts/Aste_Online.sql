@@ -213,6 +213,8 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_import` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
 	DECLARE offerta_max FLOAT UNSIGNED;
 	DECLARE increment FLOAT UNSIGNED;
+    DECLARE max_offerer CHAR(16);
+    
     SET offerta_max = OFFERTA_MAX(New.Oggetto);
     SET increment = (CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5);
 
@@ -223,6 +225,12 @@ DELIMITER ;;
 	IF increment != 0.0 THEN
 		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!: The increment must be a multiple of 0.50€";
 	END IF;
+    
+    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING OFFERTA_MAX(Oggetto));
+    
+    IF NEW.Utente = max_offerer THEN
+    	SIGNAL SQLSTATE "45002" SET MESSAGE_TEXT = "[OfferError] You are already the max offerer!";
+    END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -341,4 +349,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-17 16:33:10
+-- Dump completed on 2023-02-17 16:40:25
