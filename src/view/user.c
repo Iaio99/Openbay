@@ -11,7 +11,7 @@ int get_user_action(void)
 	char op;
 
 	clear_screen();
-	puts("\033[0;33m*********************************");
+	puts("\033[0;32m*********************************");
 	puts("*        USER DASHBOARD         *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
@@ -22,14 +22,14 @@ int get_user_action(void)
 	puts("5) Quit");
 	puts("\033[0;0m");
 
-	op = multi_choice("\033[;33mSelect an option\033[;0m", options, 5);
+	op = multi_choice("\033[0;32mSelect an option\033[0;0m", options, 5);
 	return op - '1';
 }
 
 void print_aste(asta_t *aste, char *message)
 {
 	clear_screen();
-	printf("*** %s  ***\n\n", message);
+	printf("\033[0;32m*** %s  ***\033[0;0m\n\n", message);
 
 	for(size_t i = 0; i < aste->num_entries; i++) {
 		printf("%s %s %hu %hu %hu %s %.2f %s %s %s %s %.2f %hu\n",
@@ -53,7 +53,7 @@ void print_aste(asta_t *aste, char *message)
 void print_my_aste(asta_t *aste)
 {
 	clear_screen();
-	puts("*** YOUR ASTE INFORMATIONS ***\n\n");
+	puts("\033[0;32m*** YOUR ASTE INFORMATIONS ***\033[0;0m\n\n");
 
 	for(size_t i = 0; i < aste->num_entries; i++) {
 		printf("%s %s %s %.2f %hu\n",

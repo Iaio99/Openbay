@@ -16,20 +16,16 @@ static bool add_new_object(void)
 
 	memset(&object, 0, sizeof(object));
 
-	get_input("State: ", STATE_LEN, object.state, false);
-	get_number("Lenght: ", "%hu", &object.lenght);
-	get_number("Width: ", "%hu", &object.width);
-	get_number("Height: ", "%hu", &object.height);
-	get_input("Description: ", DESCRIPTION_LEN, object.description, false);
-	get_number("Base d'asta: ", "%f", &object.start_price);
-	get_input("First level of category: ", LEVEL_LEN, object.category.first_level, false);
-	get_input("Second level of category: ", LEVEL_LEN, object.category.second_level, false);
-	get_input("Third level of category: ", LEVEL_LEN, object.category.third_level, false);
-	
-	get_number("Asta Duration [1-7]: ", "%cu", &duration);
-
-	if (duration > '7' || duration < '1')
-		return false;
+	get_input("\033[0;31mState: \033[0;0m", STATE_LEN, object.state, false);
+	get_number("\033[0;31mLenght: \033[0;0m", "%hu", &object.lenght);
+	get_number("\033[0;31mWidth: \033[0;0m", "%hu", &object.width);
+	get_number("\033[0;31mHeight: \033[0;0m", "%hu", &object.height);
+	get_input("\033[0;31mDescription: \033[0;0m", DESCRIPTION_LEN, object.description, false);
+	get_number("\033[0;31mBase d'asta: \033[0;0m", "%f", &object.start_price);
+	get_input("\033[0;31mFirst level of category: \033[0;0m", LEVEL_LEN, object.category.first_level, false);
+	get_input("\033[0;31mSecond level of category: \033[0;0m", LEVEL_LEN, object.category.second_level, false);
+	get_input("\033[0;31mThird level of category: \033[0;0m;", LEVEL_LEN, object.category.third_level, false);
+	get_number("\033[0;31mAsta Duration [1-7]\033:[0;0m ", "%cu", &duration);
 
 	duration -= 48;
 
@@ -43,9 +39,9 @@ static bool add_new_category(void)
 {
 	category_t category;
 
-	get_input("First Level: ", LEVEL_LEN, category.first_level, false);
-	get_input("Second Level: ", LEVEL_LEN, category.second_level, false);
-	get_input("Third Level: ", LEVEL_LEN, category.third_level, false);
+	get_input("\033[0;31mFirst Level:\033[0;0m ", LEVEL_LEN, category.first_level, false);
+	get_input("\033[0;31mSecond Level:\033[0;0m ", LEVEL_LEN, category.second_level, false);
+	get_input("\033[0;31mThird Level:\033[0;0m ", LEVEL_LEN, category.third_level, false);
 	
 	do_inserisci_categoria(category);
 
