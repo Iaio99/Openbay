@@ -70,17 +70,17 @@ typedef struct object {
 	category_t category;
 }object_t;
 
-struct asta_entry {
+struct auction_entry {
 	object_t object;
 	float max_offer;
 	unsigned short int number_offers;
 	char end[DATETIME_LEN];
 };
 
-typedef struct asta {
+typedef struct auction {
 	unsigned num_entries;
-	struct asta_entry aste[];
-}asta_t;
+	struct auction_entry auctions[];
+}auction_t;
 
 
 //DB operations
@@ -93,11 +93,11 @@ extern void do_user_registration(user_t user, credentials_t credentials, credit_
 extern void db_switch_to_login(void);
 extern void db_switch_to_user(void);
 extern void db_switch_to_administrator(void);
-extern void do_indici_asta(object_t object, unsigned char duration);
-extern void do_inserisci_categoria(category_t category);
-extern bool do_fai_offerta(cf_t user, float import, code_t object);
-extern void do_imposta_controfferta(cf_t user, float import, code_t object);
-extern asta_t *do_stato_aste_utente(cf_t user);
-extern asta_t *do_visualizza_aste_passate();
-extern asta_t *do_visualizza_oggetti_asta();
-extern void aste_dispose();
+extern void do_call_auction(object_t object, unsigned char duration);
+extern void do_insert_category(category_t category);
+extern bool do_make_offer(cf_t user, float import, code_t object);
+extern void do_set_counteroffer(cf_t user, float import, code_t object);
+extern auction_t *view_user_auctions_informations(cf_t user);
+extern auction_t *view_closed_auctions_informations();
+extern auction_t *view_auctions_in_progress_informations();
+extern void auctions_dispose();

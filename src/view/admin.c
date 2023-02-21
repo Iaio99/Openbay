@@ -16,7 +16,7 @@ int get_administrator_action(void)
 	puts("*        ADMIN DASHBOARD        *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
-	puts("1) Add a new object and make an asta");
+	puts("1) Add a new object and call an auction");
 	puts("2) Add a new category");
 	puts("3) Quit\033[0;0m");
 

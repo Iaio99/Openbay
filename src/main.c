@@ -58,7 +58,7 @@ int main()
 				} while(ask_for_relogin());
 				break;
 			case 1:
-				registrate_user();
+				register_user();
 				break;
 			case 2:
 			default:

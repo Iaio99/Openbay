@@ -11,63 +11,63 @@
 cf_t user_cf;
 
 
-static bool user_aste(void)
+static bool user_auctions(void)
 {
-	asta_t *aste = do_stato_aste_utente(user_cf);
+	auction_t *auctions = view_user_auctions_informations(user_cf);
 	
-	if(aste != NULL) {
-		print_my_aste(aste);
-		aste_dispose(aste);
+	if(auctions != NULL) {
+		print_user_auctions(auctions);
+		auctions_dispose(auctions);
 	}
 	
 	return false;
 }
 
 
-static bool offer(void)
+static bool make_offer(void)
 {
 	float import;
 	code_t object_code;
 	
-	get_input("\033[0;32mInsert object's code: \033[0;0m", CODE_LEN, object_code, false);
-	get_number("\033[0;32mInsert import: [0;m", "%f", &import);
+	get_input("\033[0;32mInsert object's code:\033[0;0m ", CODE_LEN, object_code, false);
+	get_number("\033[0;32mInsert import:\033[0;m ", "%f", &import);
 
-	if (do_fai_offerta(user_cf, import, object_code) && yes_or_no("\033[0;32mDo you want to set a controffer on this object?\033[0;0m]", 'y', 'n', true, true))
-		set_controffer(object_code);
+	if (do_make_offer(user_cf, import, object_code) && yes_or_no("\033[0;32mDo you want to set a controffer on this object?\033[0;0m]", 'y', 'n', true, true))
+		set_counteroffer(object_code);
 
 	return false;
 }
 
 
-static void set_controffer(code_t object_code)
+static void set_counteroffer(code_t object_code)
 {
 	float import;
 	
-	get_number("\033[0;32mInsert import: \033[0;0m]", "%f", &import);
-	do_imposta_controfferta(user_cf, import, object_code);
+	get_number("\033[0;32mInsert import:\033[0;0m ", "%f", &import);
+	do_set_counteroffer(user_cf, import, object_code);
 }
 
 
-static bool aste_in(void)
+static bool auctions_in(void)
 {
-	asta_t *aste = do_visualizza_oggetti_asta();
+	auction_t *auctions = view_auctions_in_progress_informations();
 	
-	if(aste != NULL) {
-		print_aste(aste, "ASTE IN DOING");
-		aste_dispose(aste);
+	if(auctions != NULL) {
+		print_auctions(auctions, "AUCTIONS IN PROGRESS");
+		auctions_dispose(auctions);
 	}
 	
 	return false;
 }
 
 
-static bool aste_done(void)
+static bool auctions_done(void)
 {
-	asta_t *aste = do_visualizza_aste_passate();
+	auction_t *auctions = view_closed_auctions_informations();
 	
-	if(aste != NULL) {
-		print_aste(aste, "ASTE FINISHED");
-		aste_dispose(aste);
+	if(auctions != NULL) {
+		print_auctions(auctions, "CLOSED AUCTIONS");
+		auctions_dispose(auctions);
 	}
 	
 	return false;
@@ -83,10 +83,10 @@ static struct {
 	enum actions action;
 	bool (*control)(void);
 } controls[END_OF_ACTIONS] = {
-	{.action = OFFER, .control = offer},
-	{.action = USER_ASTE, .control = user_aste},
-	{.action = ASTE_IN_CORSO, .control = aste_in},
-	{.action = ASTE_FINITE, .control = aste_done},
+	{.action = OFFER, .control = make_offer},
+	{.action = USER_AUCTIONS, .control = user_auctions},
+	{.action = AUCTIONS_IN_PROGRESS, .control = auctions_in},
+	{.action = CLOSED_AUCTIONS, .control = auctions_done},
 	{.action = QUIT, .control = quit}
 };
 

@@ -30,7 +30,7 @@ bool login(void)
 	return true;
 }
 
-bool registrate_user(void)
+bool register_user(void)
 {
 	credentials_t cred;
 	user_t user;

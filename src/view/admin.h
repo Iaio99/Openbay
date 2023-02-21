@@ -2,8 +2,8 @@
 #include "../model/db.h"
 
 enum actions {
-	OBJECT_NEW,
-	CATEGORY_NEW,
+	NEW_OBJECT,
+	NEW_CATEGORY,
 	QUIT,
 	END_OF_ACTIONS
 };

@@ -15,10 +15,10 @@ int get_user_action(void)
 	puts("*        USER DASHBOARD         *");
 	puts("*********************************\n");
 	puts("*** What should I do for you? ***\n");
-	puts("1) Do an offer");
-	puts("2) See status of my aste");
-	puts("3) See aste in doing");
-	puts("4) See objects aggiudicated");
+	puts("1) Make an offer");
+	puts("2) View status of my auctions");
+	puts("3) View auctions in progress");
+	puts("4) View objects awarded");
 	puts("5) Quit");
 	puts("\033[0;0m");
 
@@ -26,42 +26,42 @@ int get_user_action(void)
 	return op - '1';
 }
 
-void print_aste(asta_t *aste, char *message)
+void print_auctions(auction_t *auctions, char *message)
 {
 	clear_screen();
 	printf("\033[0;32m*** %s  ***\033[0;0m\n\n", message);
 
-	for(size_t i = 0; i < aste->num_entries; i++) {
+	for(size_t i = 0; i < auctions->num_entries; i++) {
 		printf("%s %s %hu %hu %hu %s %.2f %s %s %s %s %.2f %hu\n",
-			aste->aste[i].object.code,
-			aste->aste[i].object.state,
-			aste->aste[i].object.lenght,
-			aste->aste[i].object.width,
-			aste->aste[i].object.height,
-			aste->aste[i].object.description,
-			aste->aste[i].object.start_price,
-			aste->aste[i].end,
-			aste->aste[i].object.category.first_level,
-			aste->aste[i].object.category.second_level,
-			aste->aste[i].object.category.third_level,
-			aste->aste[i].max_offer,
-			aste->aste[i].number_offers
+			auctions->auctions[i].object.code,
+			auctions->auctions[i].object.state,
+			auctions->auctions[i].object.lenght,
+			auctions->auctions[i].object.width,
+			auctions->auctions[i].object.height,
+			auctions->auctions[i].object.description,
+			auctions->auctions[i].object.start_price,
+			auctions->auctions[i].end,
+			auctions->auctions[i].object.category.first_level,
+			auctions->auctions[i].object.category.second_level,
+			auctions->auctions[i].object.category.third_level,
+			auctions->auctions[i].max_offer,
+			auctions->auctions[i].number_offers
 		);
 	}
 }
 
-void print_my_aste(asta_t *aste)
+void print_user_auctions(auction_t *auctions)
 {
 	clear_screen();
-	puts("\033[0;32m*** YOUR ASTE INFORMATIONS ***\033[0;0m\n\n");
+	puts("\033[0;32m*** YOUR AUCTIONS INFORMATIONS ***\033[0;0m\n\n");
 
-	for(size_t i = 0; i < aste->num_entries; i++) {
+	for(size_t i = 0; i < auctions->num_entries; i++) {
 		printf("%s %s %s %.2f %hu\n",
-			aste->aste[i].object.code,
-			aste->aste[i].object.description,
-			aste->aste[i].end,
-			aste->aste[i].max_offer,
-			aste->aste[i].number_offers
+			auctions->auctions[i].object.code,
+			auctions->auctions[i].object.description,
+			auctions->auctions[i].end,
+			auctions->auctions[i].max_offer,
+			auctions->auctions[i].number_offers
 		);
 	}
 }

@@ -11,14 +11,14 @@
 static MYSQL *conn;
 
 static MYSQL_STMT *login_procedure;
-static MYSQL_STMT *fai_offerta;
-static MYSQL_STMT *imposta_controfferta;
-static MYSQL_STMT *indici_asta;
-static MYSQL_STMT *inserisci_categoria;
-static MYSQL_STMT *stato_aste_utente;
-static MYSQL_STMT *user_registration;
-static MYSQL_STMT *visualizza_aste_passate;
-static MYSQL_STMT *visualizza_oggetti_asta;
+static MYSQL_STMT *make_offer_procedure;
+static MYSQL_STMT *set_counteroffer_procedure;
+static MYSQL_STMT *call_auction_procedure;
+static MYSQL_STMT *insert_category_procedure;
+static MYSQL_STMT *user_auctions_informations_procedure;
+static MYSQL_STMT *user_registration_procedure;
+static MYSQL_STMT *closed_auctions_informations;
+static MYSQL_STMT *auctions_in_progress_informations_procedure;
 
 
 static void close_prepared_stmts(void)
@@ -27,37 +27,37 @@ static void close_prepared_stmts(void)
 		mysql_stmt_close(login_procedure);
 		login_procedure = NULL;
 	}
-	if(fai_offerta) {
-		mysql_stmt_close(fai_offerta);
-		fai_offerta = NULL;
+	if(make_offer_procedure) {
+		mysql_stmt_close(make_offer_procedure);
+		make_offer_procedure = NULL;
 	}
-	if(imposta_controfferta) {
-		mysql_stmt_close(imposta_controfferta);
-		imposta_controfferta = NULL;
+	if(set_counteroffer_procedure) {
+		mysql_stmt_close(set_counteroffer_procedure);
+		set_counteroffer_procedure = NULL;
 	}
-	if(indici_asta) {
-		mysql_stmt_close(indici_asta);
-		indici_asta = NULL;
+	if(call_auction_procedure) {
+		mysql_stmt_close(call_auction_procedure);
+		call_auction_procedure = NULL;
 	}
-	if(inserisci_categoria) {
-		mysql_stmt_close(inserisci_categoria);
-		inserisci_categoria = NULL;
+	if(insert_category_procedure) {
+		mysql_stmt_close(insert_category_procedure);
+		insert_category_procedure = NULL;
 	}
-	if(stato_aste_utente) {
-		mysql_stmt_close(stato_aste_utente);
-		stato_aste_utente = NULL;
+	if(user_auctions_informations_procedure) {
+		mysql_stmt_close(user_auctions_informations_procedure);
+		user_auctions_informations_procedure = NULL;
 	}
-	if(user_registration) {
-		mysql_stmt_close(user_registration);
-		user_registration = NULL;
+	if(user_registration_procedure) {
+		mysql_stmt_close(user_registration_procedure);
+		user_registration_procedure = NULL;
 	}
-	if(visualizza_aste_passate) {
-		mysql_stmt_close(visualizza_aste_passate);
-		visualizza_aste_passate = NULL;
+	if(closed_auctions_informations) {
+		mysql_stmt_close(closed_auctions_informations);
+		closed_auctions_informations = NULL;
 	}
-	if(visualizza_oggetti_asta) {
-		mysql_stmt_close(visualizza_oggetti_asta);
-		visualizza_oggetti_asta = NULL;
+	if(auctions_in_progress_informations_procedure) {
+		mysql_stmt_close(auctions_in_progress_informations_procedure);
+		auctions_in_progress_informations_procedure = NULL;
 	}
 }
 
@@ -71,42 +71,42 @@ static bool initialize_prepared_stmts(role_t for_role)
 				print_stmt_error(login_procedure, "Unable to initialize login statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&user_registration, "call user_registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(user_registration, "Unable to initialize user_registration statement");
+			if(!setup_prepared_stmt(&user_registration_procedure, "call user_registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
+				print_stmt_error(user_registration_procedure, "Unable to initialize user_registration statement");
 				return false;
 			}
 			break;
 		
 		case ADMIN:
-			if(!setup_prepared_stmt(&indici_asta, "call indici_asta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(indici_asta, "Unable to initialize indici_asta statement");
+			if(!setup_prepared_stmt(&call_auction_procedure, "call call_auction(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn)) {
+				print_stmt_error(call_auction_procedure, "Unable to initialize call_auction_procedure statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&inserisci_categoria, "call inserisci_categoria(?, ?, ?)", conn)) {
-				print_stmt_error(inserisci_categoria, "Unable to initialize inserisci_categoria statement");
+			if(!setup_prepared_stmt(&insert_category_procedure, "call insert_category(?, ?, ?)", conn)) {
+				print_stmt_error(insert_category_procedure, "Unable to initialize insert_category_procedure statement");
 				return false;
 			}
 			break;
 
 		case USER:
-			if(!setup_prepared_stmt(&fai_offerta, "call fai_offerta(?, ?, ?)", conn)) {
-				print_stmt_error(fai_offerta, "Unable to initialize register fai_offerta statement");
+			if(!setup_prepared_stmt(&make_offer_procedure, "call make_offer(?, ?, ?)", conn)) {
+				print_stmt_error(make_offer_procedure, "Unable to initialize register make_offer_procedure statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&imposta_controfferta, "call imposta_controfferta(?, ?, ?)", conn)) {
-				print_stmt_error(imposta_controfferta, "Unable to initialize imposta_controfferta statement");
+			if(!setup_prepared_stmt(&set_counteroffer_procedure, "call set_counteroffer(?, ?, ?)", conn)) {
+				print_stmt_error(set_counteroffer_procedure, "Unable to initialize set_counteroffer_procedure statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&stato_aste_utente, "call stato_aste_utente(?, ?, ?, ?, ?, ?)", conn)) {
-				print_stmt_error(stato_aste_utente, "Unable to initialize register stato_aste_utente statement");
+			if(!setup_prepared_stmt(&user_auctions_informations_procedure, "call user_auctions_informations(?)", conn)) {
+				print_stmt_error(user_auctions_informations_procedure, "Unable to initialize register user_auctions_informations_procedure statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&visualizza_aste_passate, "call visualizza_aste_passate()", conn)) {
-				print_stmt_error(visualizza_aste_passate, "Unable to initialize register isualizza_aste_passate statement");
+			if(!setup_prepared_stmt(&closed_auctions_informations, "call closed_auctions_informations()", conn)) {
+				print_stmt_error(closed_auctions_informations, "Unable to initialize register isualizza_aste_passate statement");
 				return false;
 			}
-			if(!setup_prepared_stmt(&visualizza_oggetti_asta, "call visualizza_oggetti_asta()", conn)) {
-				print_stmt_error(visualizza_oggetti_asta, "Unable to initialize visualizza_oggetti_asta statement");
+			if(!setup_prepared_stmt(&auctions_in_progress_informations_procedure, "call auctions_in_progress_informations()", conn)) {
+				print_stmt_error(auctions_in_progress_informations_procedure, "Unable to initialize auctions_in_progress_informations_procedure statement");
 				return false;
 			}		
 			break;
@@ -240,20 +240,20 @@ void do_user_registration(user_t user, credentials_t credentials, credit_card_t 
 	set_binding_param(&param[9], MYSQL_TYPE_SHORT, &credit_card.cvv, sizeof(credit_card.cvv), 1);
 	set_binding_param(&param[10], MYSQL_TYPE_DATE, &expiration_date, sizeof(expiration_date), 0);
 
-	if(mysql_stmt_bind_param(user_registration, param) != 0) {
+	if(mysql_stmt_bind_param(user_registration_procedure, param) != 0) {
  		// Note _param
-		print_stmt_error(user_registration, "Could not bind parameters for user_registration");
+		print_stmt_error(user_registration_procedure, "Could not bind parameters for user_registration");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(user_registration) != 0) {
-		print_stmt_error(user_registration, "Could not execute user_registration procedure");
+	if(mysql_stmt_execute(user_registration_procedure) != 0) {
+		print_stmt_error(user_registration_procedure, "Could not execute user_registration procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(user_registration);
-	mysql_stmt_reset(user_registration);
+	mysql_stmt_free_result(user_registration_procedure);
+	mysql_stmt_reset(user_registration_procedure);
 	return;
 }
 
@@ -300,7 +300,7 @@ void db_switch_to_user(void)
 }
 
 
-void do_indici_asta(object_t object, unsigned char duration)
+void do_call_auction(object_t object, unsigned char duration)
 {
 	MYSQL_BIND param[10];
 
@@ -316,25 +316,25 @@ void do_indici_asta(object_t object, unsigned char duration)
 	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, object.category.second_level, strlen(object.category.second_level), 0);
 	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, object.category.third_level, strlen(object.category.third_level), 0);
 
-	if(mysql_stmt_bind_param(indici_asta, param) != 0) {
+	if(mysql_stmt_bind_param(call_auction_procedure, param) != 0) {
  		// Note _param
-		print_stmt_error(indici_asta, "Could not bind parameters for indici_asta");
+		print_stmt_error(call_auction_procedure, "Could not bind parameters for call_auction");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(indici_asta) != 0) {
-		print_stmt_error(indici_asta, "Could not execute indici_asta procedure");
+	if(mysql_stmt_execute(call_auction_procedure) != 0) {
+		print_stmt_error(call_auction_procedure, "Could not execute call_auction procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(indici_asta);
-	mysql_stmt_reset(indici_asta);
+	mysql_stmt_free_result(call_auction_procedure);
+	mysql_stmt_reset(call_auction_procedure);
 	return;
 }
 
 
-void do_inserisci_categoria(category_t category)
+void do_insert_category(category_t category)
 {
 	MYSQL_BIND param[3];
 
@@ -343,25 +343,25 @@ void do_inserisci_categoria(category_t category)
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, category.second_level, strlen(category.second_level), 0);
 	set_binding_param(&param[2], MYSQL_TYPE_VAR_STRING, category.third_level, strlen(category.third_level), 0);
 
-	if(mysql_stmt_bind_param(inserisci_categoria, param) != 0) {
+	if(mysql_stmt_bind_param(insert_category_procedure, param) != 0) {
  		// Note _param
-		print_stmt_error(inserisci_categoria, "Could not bind parameters for inserisci_categoria");
+		print_stmt_error(insert_category_procedure, "Could not bind parameters for insert_category");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(inserisci_categoria) != 0) {
-		print_stmt_error(inserisci_categoria, "Could not execute inserisci_categoria procedure");
+	if(mysql_stmt_execute(insert_category_procedure) != 0) {
+		print_stmt_error(insert_category_procedure, "Could not execute insert_category procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(inserisci_categoria);
-	mysql_stmt_reset(inserisci_categoria);
+	mysql_stmt_free_result(insert_category_procedure);
+	mysql_stmt_reset(insert_category_procedure);
 	return;
 }
 
 
-extern void do_imposta_controfferta(cf_t user, float import, code_t object)
+extern void do_set_counteroffer(cf_t user, float import, code_t object)
 {
 	MYSQL_BIND param[3];
 
@@ -370,25 +370,25 @@ extern void do_imposta_controfferta(cf_t user, float import, code_t object)
 	set_binding_param(&param[1], MYSQL_TYPE_FLOAT, &import, sizeof(import), 1);
 	set_binding_param(&param[2], MYSQL_TYPE_STRING, object, strlen(object), 0);
 
-	if(mysql_stmt_bind_param(imposta_controfferta, param) != 0) {
+	if(mysql_stmt_bind_param(set_counteroffer_procedure, param) != 0) {
  		// Note _param
-		print_stmt_error(imposta_controfferta, "Could not bind parameters for imposta_controfferta");
+		print_stmt_error(set_counteroffer_procedure, "Could not bind parameters for set_counteroffer");
 		return;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(imposta_controfferta) != 0) {
-		print_stmt_error(imposta_controfferta, "Could not execute imposta_controfferta procedure");
+	if(mysql_stmt_execute(set_counteroffer_procedure) != 0) {
+		print_stmt_error(set_counteroffer_procedure, "Could not execute set_counteroffer procedure");
 		return;
 	}
 
-	mysql_stmt_free_result(imposta_controfferta);
-	mysql_stmt_reset(imposta_controfferta);
+	mysql_stmt_free_result(set_counteroffer_procedure);
+	mysql_stmt_reset(set_counteroffer_procedure);
 	return;
 }
 
 
-extern bool do_fai_offerta(cf_t user, float import, code_t object)
+extern bool do_make_offer(cf_t user, float import, code_t object)
 {
 	MYSQL_BIND param[3];
 
@@ -397,25 +397,25 @@ extern bool do_fai_offerta(cf_t user, float import, code_t object)
 	set_binding_param(&param[1], MYSQL_TYPE_FLOAT, &import, sizeof(import), 1);
 	set_binding_param(&param[2], MYSQL_TYPE_STRING, object, strlen(object), 0);
 
-	if(mysql_stmt_bind_param(fai_offerta, param) != 0) {
+	if(mysql_stmt_bind_param(make_offer_procedure, param) != 0) {
  		// Note _param
-		print_stmt_error(fai_offerta, "Could not bind parameters for fai_offerta");
+		print_stmt_error(make_offer_procedure, "Could not bind parameters for make_offer");
 		return false;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(fai_offerta) != 0) {
-		print_stmt_error(fai_offerta, "Could not execute fai_offerta procedure");
+	if(mysql_stmt_execute(make_offer_procedure) != 0) {
+		print_stmt_error(make_offer_procedure, "Could not execute make_offer procedure");
 		return false;
 	}
 
-	mysql_stmt_free_result(fai_offerta);
-	mysql_stmt_reset(fai_offerta);
+	mysql_stmt_free_result(make_offer_procedure);
+	mysql_stmt_reset(make_offer_procedure);
 	return true;
 }
 
 
-asta_t *do_stato_aste_utente(cf_t user)
+auction_t *view_user_auctions_informations(cf_t user)
 {
 	int status;
 	size_t row = 0;
@@ -425,76 +425,76 @@ asta_t *do_stato_aste_utente(cf_t user)
 	char description[DESCRIPTION_LEN];
 	unsigned short int number_offers;
 	float max_offer;
-	MYSQL_TIME end_asta;
+	MYSQL_TIME end_auction;
 
-	asta_t *aste = NULL;
+	auction_t *auctions = NULL;
 
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, user, strlen(user), 0);
-	set_binding_param(&param[1], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
-	set_binding_param(&param[3], MYSQL_TYPE_TIMESTAMP, &end_asta, sizeof(end_asta), 0);
-	set_binding_param(&param[4], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
-	set_binding_param(&param[5], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
+//	set_binding_param(&param[1], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
+//	set_binding_param(&param[2], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
+//	set_binding_param(&param[3], MYSQL_TYPE_TIMESTAMP, &end_auction, sizeof(end_auction), 0);
+//	set_binding_param(&param[4], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
+//	set_binding_param(&param[5], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
-	if(mysql_stmt_bind_param(stato_aste_utente, param)) {
-		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for stato_aste_utente");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_param(user_auctions_informations_procedure, param)) {
+		print_stmt_error(user_auctions_informations_procedure, "Unable to bind output parameters for user_auctions_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(stato_aste_utente) != 0) {
-		print_stmt_error(stato_aste_utente, "Could not execute stato_aste_utente procedure");
+	if(mysql_stmt_execute(user_auctions_informations_procedure) != 0) {
+		print_stmt_error(user_auctions_informations_procedure, "Could not execute user_auctions_informations procedure");
 		goto out;
 	}
 
-	mysql_stmt_store_result(stato_aste_utente);
+	mysql_stmt_store_result(user_auctions_informations_procedure);
 
-	aste = malloc(sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(stato_aste_utente));
-	if(aste == NULL)
+	auctions = malloc(sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(user_auctions_informations_procedure));
+	if(auctions == NULL)
 		goto out;
-	memset(aste, 0, sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(stato_aste_utente));
-	aste->num_entries = mysql_stmt_num_rows(stato_aste_utente);
+	memset(auctions, 0, sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(user_auctions_informations_procedure));
+	auctions->num_entries = mysql_stmt_num_rows(user_auctions_informations_procedure);
 
 	// Get bound parameters
-	mysql_stmt_store_result(stato_aste_utente);
+	mysql_stmt_store_result(user_auctions_informations_procedure);
 	
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
 	set_binding_param(&param[1], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
-	set_binding_param(&param[2], MYSQL_TYPE_DATETIME, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[2], MYSQL_TYPE_DATETIME, &end_auction, sizeof(end_auction), 0);
 	set_binding_param(&param[3], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 0);
 	set_binding_param(&param[4], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 0);
 
-	if(mysql_stmt_bind_result(stato_aste_utente, param)) {
-		print_stmt_error(stato_aste_utente, "Unable to bind output parameters for get aste");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_result(user_auctions_informations_procedure, param)) {
+		print_stmt_error(user_auctions_informations_procedure, "Unable to bind output parameters for view_user_auctions_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	while (true) {
-		status = mysql_stmt_fetch(stato_aste_utente);
+		status = mysql_stmt_fetch(user_auctions_informations_procedure);
 
 		if (status == 1 || status == MYSQL_NO_DATA)
 			break;
 
-		strcpy(aste->aste[row].object.code, code);
-		strcpy(aste->aste[row].object.description, description);
-		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
-		aste->aste[row].number_offers = number_offers;
-		aste->aste[row].max_offer = max_offer;
+		strcpy(auctions->auctions[row].object.code, code);
+		strcpy(auctions->auctions[row].object.description, description);
+		mysql_timestamp_to_string(&end_auction, auctions->auctions[row].end);
+		auctions->auctions[row].number_offers = number_offers;
+		auctions->auctions[row].max_offer = max_offer;
 
 		row++;
 	}
     out:
-	mysql_stmt_free_result(stato_aste_utente);
-	mysql_stmt_reset(stato_aste_utente);
-	return aste;
+	mysql_stmt_free_result(user_auctions_informations_procedure);
+	mysql_stmt_reset(user_auctions_informations_procedure);
+	return auctions;
 }
 
 
-asta_t *do_visualizza_aste_passate()
+auction_t *view_closed_auctions_informations()
 {
 	int status;
 	size_t row = 0;
@@ -512,33 +512,33 @@ asta_t *do_visualizza_aste_passate()
 	char third_level[LEVEL_LEN];
 	unsigned short int number_offers;
 	float max_offer;
-	MYSQL_TIME end_asta;
+	MYSQL_TIME end_auction;
 
-	asta_t *aste = NULL;
+	auction_t *auctions = NULL;
 
-	if(mysql_stmt_bind_param(visualizza_aste_passate, param)) {
-		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_param(closed_auctions_informations, param)) {
+		print_stmt_error(closed_auctions_informations, "Unable to bind output parameters for closed_auctions_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(visualizza_aste_passate) != 0) {
-		print_stmt_error(visualizza_aste_passate, "Could not execute visualizza_aste_passate procedure");
+	if(mysql_stmt_execute(closed_auctions_informations) != 0) {
+		print_stmt_error(closed_auctions_informations, "Could not execute closed_auctions_informations procedure");
 		goto out;
 	}
 
-	mysql_stmt_store_result(visualizza_aste_passate);
+	mysql_stmt_store_result(closed_auctions_informations);
 
-	aste = malloc(sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(visualizza_aste_passate));
-	if(aste == NULL)
+	auctions = malloc(sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(closed_auctions_informations));
+	if(auctions == NULL)
 		goto out;
-	memset(aste, 0, sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(visualizza_aste_passate));
-	aste->num_entries = mysql_stmt_num_rows(visualizza_aste_passate);
+	memset(auctions, 0, sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(closed_auctions_informations));
+	auctions->num_entries = mysql_stmt_num_rows(closed_auctions_informations);
 
 	// Get bound parameters
-	mysql_stmt_store_result(visualizza_aste_passate);
+	mysql_stmt_store_result(closed_auctions_informations);
 
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, STATE_LEN, 0);
@@ -547,50 +547,50 @@ asta_t *do_visualizza_aste_passate()
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
 	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_auction, sizeof(end_auction), 0);
 	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
 	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
 	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
 	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 
-	if(mysql_stmt_bind_result(visualizza_aste_passate, param)) {
-		print_stmt_error(visualizza_aste_passate, "Unable to bind output parameters for visualizza_aste_passate");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_result(closed_auctions_informations, param)) {
+		print_stmt_error(closed_auctions_informations, "Unable to bind output parameters for closed_auctions_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	while (true) {
-		status = mysql_stmt_fetch(visualizza_aste_passate);
+		status = mysql_stmt_fetch(closed_auctions_informations);
 
 		if (status == 1 || status == MYSQL_NO_DATA)
 			break;
 
-		strcpy(aste->aste[row].object.code, code);
-		strcpy(aste->aste[row].object.state, state);
-		aste->aste[row].object.lenght = lenght;
-		aste->aste[row].object.width = width;
-		aste->aste[row].object.height = height;
-		strcpy(aste->aste[row].object.description, description);
-		aste->aste[row].object.start_price = start_price;
-		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
-		strcpy(aste->aste[row].object.category.first_level, first_level);
-		strcpy(aste->aste[row].object.category.second_level, second_level);
-		strcpy(aste->aste[row].object.category.third_level, third_level);
-		aste->aste[row].number_offers = number_offers;
-		aste->aste[row].max_offer = max_offer;
+		strcpy(auctions->auctions[row].object.code, code);
+		strcpy(auctions->auctions[row].object.state, state);
+		auctions->auctions[row].object.lenght = lenght;
+		auctions->auctions[row].object.width = width;
+		auctions->auctions[row].object.height = height;
+		strcpy(auctions->auctions[row].object.description, description);
+		auctions->auctions[row].object.start_price = start_price;
+		mysql_timestamp_to_string(&end_auction, auctions->auctions[row].end);
+		strcpy(auctions->auctions[row].object.category.first_level, first_level);
+		strcpy(auctions->auctions[row].object.category.second_level, second_level);
+		strcpy(auctions->auctions[row].object.category.third_level, third_level);
+		auctions->auctions[row].number_offers = number_offers;
+		auctions->auctions[row].max_offer = max_offer;
 
 		row++;
 	}
     out:
-	mysql_stmt_free_result(visualizza_aste_passate);
-	mysql_stmt_reset(visualizza_aste_passate);
-	return aste;
+	mysql_stmt_free_result(closed_auctions_informations);
+	mysql_stmt_reset(closed_auctions_informations);
+	return auctions;
 }
 
 
-asta_t *do_visualizza_oggetti_asta()
+auction_t *view_auctions_in_progress_informations()
 {
 	int status;
 	size_t row = 0;
@@ -603,38 +603,38 @@ asta_t *do_visualizza_oggetti_asta()
 	unsigned short int height;
 	char description[DESCRIPTION_LEN];
 	float start_price;
-	MYSQL_TIME end_asta;
+	MYSQL_TIME end_auction;
 	char first_level[LEVEL_LEN];
 	char second_level[LEVEL_LEN];
 	char third_level[LEVEL_LEN];
 	unsigned short int number_offers;
 	float max_offer;
 
-	asta_t *aste = NULL;
+	auction_t *auctions = NULL;
 
-	if(mysql_stmt_bind_param(visualizza_oggetti_asta, param)) {
-		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_param(auctions_in_progress_informations_procedure, param)) {
+		print_stmt_error(auctions_in_progress_informations_procedure, "Unable to bind output parameters for auctions_in_progress_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	// Run procedure
-	if(mysql_stmt_execute(visualizza_oggetti_asta) != 0) {
-		print_stmt_error(visualizza_oggetti_asta, "Could not execute visualizza_oggetti_asta procedure");
+	if(mysql_stmt_execute(auctions_in_progress_informations_procedure) != 0) {
+		print_stmt_error(auctions_in_progress_informations_procedure, "Could not execute auctions_in_progress_informationss procedure");
 		goto out;
 	}
 
-	mysql_stmt_store_result(visualizza_oggetti_asta);
+	mysql_stmt_store_result(auctions_in_progress_informations_procedure);
 
-	aste = malloc(sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(visualizza_oggetti_asta));
-	if(aste == NULL)
+	auctions = malloc(sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(auctions_in_progress_informations_procedure));
+	if(auctions == NULL)
 		goto out;
-	memset(aste, 0, sizeof(*aste) + sizeof(struct asta_entry) * mysql_stmt_num_rows(visualizza_oggetti_asta));
-	aste->num_entries = mysql_stmt_num_rows(visualizza_oggetti_asta);
+	memset(auctions, 0, sizeof(*auctions) + sizeof(struct auction_entry) * mysql_stmt_num_rows(auctions_in_progress_informations_procedure));
+	auctions->num_entries = mysql_stmt_num_rows(auctions_in_progress_informations_procedure);
 
 	// Get bound parameters
-	mysql_stmt_store_result(visualizza_oggetti_asta);
+	mysql_stmt_store_result(auctions_in_progress_informations_procedure);
 	
 	set_binding_param(&param[0], MYSQL_TYPE_STRING, code, CODE_LEN, 0);
 	set_binding_param(&param[1], MYSQL_TYPE_VAR_STRING, state, STATE_LEN, 0);
@@ -643,51 +643,50 @@ asta_t *do_visualizza_oggetti_asta()
 	set_binding_param(&param[4], MYSQL_TYPE_TINY, &height, sizeof(height), 1);
 	set_binding_param(&param[5], MYSQL_TYPE_BLOB, description, DESCRIPTION_LEN, 0);
 	set_binding_param(&param[6], MYSQL_TYPE_FLOAT, &start_price, sizeof(start_price), 1);
-	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_asta, sizeof(end_asta), 0);
+	set_binding_param(&param[7], MYSQL_TYPE_DATE, &end_auction, sizeof(end_auction), 0);
 	set_binding_param(&param[8], MYSQL_TYPE_VAR_STRING, first_level, LEVEL_LEN, 0);
 	set_binding_param(&param[9], MYSQL_TYPE_VAR_STRING, second_level, LEVEL_LEN, 0);
 	set_binding_param(&param[10], MYSQL_TYPE_VAR_STRING, third_level, LEVEL_LEN, 0);
 	set_binding_param(&param[11], MYSQL_TYPE_FLOAT, &max_offer, sizeof(max_offer), 1);
 	set_binding_param(&param[12], MYSQL_TYPE_SHORT, &number_offers, sizeof(number_offers), 1);
 
-	if(mysql_stmt_bind_result(visualizza_oggetti_asta, param)) {
-		print_stmt_error(visualizza_oggetti_asta, "Unable to bind output parameters for visualizza_oggetti_asta");
-		free(aste);
-		aste = NULL;
+	if(mysql_stmt_bind_result(auctions_in_progress_informations_procedure, param)) {
+		print_stmt_error(auctions_in_progress_informations_procedure, "Unable to bind output parameters for auctions_in_progress_informations");
+		free(auctions);
+		auctions = NULL;
 		goto out;
 	}
 
 	while (true) {
-		status = mysql_stmt_fetch(visualizza_oggetti_asta);
+		status = mysql_stmt_fetch(auctions_in_progress_informations_procedure);
 
 		if (status == 1 || status == MYSQL_NO_DATA)
 			break;
 
-		strcpy(aste->aste[row].object.code, code);
-		strcpy(aste->aste[row].object.state, state);
-		aste->aste[row].object.lenght = lenght;
-		aste->aste[row].object.width = width;
-		aste->aste[row].object.height = height;
-		strcpy(aste->aste[row].object.description, description);
-		aste->aste[row].object.start_price = start_price;
-		mysql_timestamp_to_string(&end_asta, aste->aste[row].end);
-		strcpy(aste->aste[row].object.category.first_level, first_level);
-		strcpy(aste->aste[row].object.category.second_level, second_level);
-		strcpy(aste->aste[row].object.category.third_level, third_level);
-		aste->aste[row].max_offer = max_offer;
-		aste->aste[row].number_offers = number_offers;
+		strcpy(auctions->auctions[row].object.code, code);
+		strcpy(auctions->auctions[row].object.state, state);
+		auctions->auctions[row].object.lenght = lenght;
+		auctions->auctions[row].object.width = width;
+		auctions->auctions[row].object.height = height;
+		strcpy(auctions->auctions[row].object.description, description);
+		auctions->auctions[row].object.start_price = start_price;
+		mysql_timestamp_to_string(&end_auction, auctions->auctions[row].end);
+		strcpy(auctions->auctions[row].object.category.first_level, first_level);
+		strcpy(auctions->auctions[row].object.category.second_level, second_level);
+		strcpy(auctions->auctions[row].object.category.third_level, third_level);
+		auctions->auctions[row].max_offer = max_offer;
+		auctions->auctions[row].number_offers = number_offers;
 
 		row++;
 	}
-	printf("PLUTO");
     out:
-	mysql_stmt_free_result(visualizza_oggetti_asta);
-	mysql_stmt_reset(visualizza_oggetti_asta);
-	return aste;
+	mysql_stmt_free_result(auctions_in_progress_informations_procedure);
+	mysql_stmt_reset(auctions_in_progress_informations_procedure);
+	return auctions;
 }
 
 
-void aste_dispose(asta_t *aste)
+void auctions_dispose(auction_t *auctions)
 {
-	free(aste);
+	free(auctions);
 }
