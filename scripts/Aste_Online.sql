@@ -1,4 +1,4 @@
--- MariaDB dump 10.19  Distrib 10.10.3-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.11.2-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: Aste_Online
 -- ------------------------------------------------------
@@ -157,7 +157,7 @@ DELIMITER ;;
     DECLARE importo_controfferta FLOAT UNSIGNED;
     DECLARE max_offerer CHAR(16);
     
-    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING OFFERTA_MAX(Oggetto));
+    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING MAX_OFFER(Oggetto));
     
     IF NEW.Utente != max_offerer THEN
     	SIGNAL SQLSTATE "45002" SET MESSAGE_TEXT = "[OfferError] You are not the max offerer!";
@@ -165,7 +165,7 @@ DELIMITER ;;
     
     SET importo_controfferta = (SELECT Importo FROM Controfferte WHERE Oggetto = New.Oggetto);
     
-    IF Importo_controfferta <= OFFERTA_MAX(New.Oggetto) THEN
+    IF Importo_controfferta <= MAX_OFFER(New.Oggetto) THEN
     	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The controffer must be higher then max offer";
     END IF;
     
@@ -215,7 +215,7 @@ DELIMITER ;;
 	DECLARE increment FLOAT UNSIGNED;
     DECLARE max_offerer CHAR(16);
     
-    SET offerta_max = OFFERTA_MAX(New.Oggetto);
+    SET offerta_max = MAX_OFFER(New.Oggetto);
     SET increment = (CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5);
 
     IF new.Importo < offerta_max THEN
@@ -226,7 +226,7 @@ DELIMITER ;;
 		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!: The increment must be a multiple of 0.50€";
 	END IF;
     
-    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING OFFERTA_MAX(Oggetto));
+    SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING MAX_OFFER(Oggetto));
     
     IF NEW.Utente = max_offerer THEN
     	SIGNAL SQLSTATE "45002" SET MESSAGE_TEXT = "[OfferError] You are already the max offerer!";
@@ -330,12 +330,12 @@ DELIMITER ;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`giuliano`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,`OFFERTA_MAX`(`Oggetti`.`Codice`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Oggetti` left join `Offerte` on((`Oggetti`.`Codice` = `Offerte`.`Oggetto`))) */;
+/*!50001 VIEW `Aste` AS select `Oggetti`.`Codice` AS `Codice`,`Oggetti`.`Stato` AS `Stato`,`Oggetti`.`Lunghezza` AS `Lunghezza`,`Oggetti`.`Larghezza` AS `Larghezza`,`Oggetti`.`Altezza` AS `Altezza`,`Oggetti`.`Descrizione` AS `Descrizione`,`Oggetti`.`BaseAsta` AS `BaseAsta`,`Oggetti`.`ScadenzaAsta` AS `ScadenzaAsta`,`Oggetti`.`NumeroOfferte` AS `NumeroOfferte`,`Oggetti`.`PrimoLivello` AS `PrimoLivello`,`Oggetti`.`SecondoLivello` AS `SecondoLivello`,`Oggetti`.`TerzoLivello` AS `TerzoLivello`,`MAX_OFFER`(`Oggetti`.`Codice`) AS `OffertaMassima`,`Offerte`.`Utente` AS `Partecipante` from (`Oggetti` left join `Offerte` on((`Oggetti`.`Codice` = `Offerte`.`Oggetto`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -349,4 +349,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-17 17:00:32
+-- Dump completed on 2023-02-21  1:49:15
