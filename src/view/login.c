@@ -10,9 +10,9 @@ int get_login_action()
 	char op;
 
 	clear_screen();
-	puts("\033[0;33m***********************************");
+	puts("\033[0;33m************************************");
 	puts("*           OPENBAY HOME           *");
-	puts("***********************************\n");
+	puts("************************************\n");
 	puts("*** What should I do for you? ***\n");
 	puts("1) Login");
 	puts("2) Register");
