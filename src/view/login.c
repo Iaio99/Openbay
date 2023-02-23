@@ -10,12 +10,12 @@ int get_login_action()
 	char op;
 
 	clear_screen();
-	puts("\033[0;33m**********************************");
-	puts("*              HOME              *");
-	puts("**********************************\n");
+	puts("\033[0;33m***********************************");
+	puts("*           OPENBAY HOME           *");
+	puts("***********************************\n");
 	puts("*** What should I do for you? ***\n");
 	puts("1) Login");
-	puts("2) Sign In");
+	puts("2) Register");
 	puts("3) Quit\033[0;0m");
 
 	op = multi_choice("\033[0;33mSelect an option\033[0;0m", options, 3);
