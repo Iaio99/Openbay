@@ -56,6 +56,18 @@ CREATE TABLE `Auth` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Auth`
+--
+
+LOCK TABLES `Auth` WRITE;
+/*!40000 ALTER TABLE `Auth` DISABLE KEYS */;
+INSERT INTO `Auth` VALUES
+('859173e360744739ae4ef474ce566312','amministratore','Giuliano'),
+('859173e360744739ae4ef474ce566312','utente','Iaio99');
+/*!40000 ALTER TABLE `Auth` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `CarteCredito`
 --
 
@@ -71,6 +83,17 @@ CREATE TABLE `CarteCredito` (
   CONSTRAINT `CarteCredito_ibfk_1` FOREIGN KEY (`Intestatario`) REFERENCES `Utenti` (`CF`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CarteCredito`
+--
+
+LOCK TABLES `CarteCredito` WRITE;
+/*!40000 ALTER TABLE `CarteCredito` DISABLE KEYS */;
+INSERT INTO `CarteCredito` VALUES
+(523,'2026-04-01','VLLGLN99T02H501N','4023-6010-1188-4129');
+/*!40000 ALTER TABLE `CarteCredito` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -110,6 +133,17 @@ CREATE TABLE `Categorie` (
   PRIMARY KEY (`PrimoLivello`,`SecondoLivello`,`TerzoLivello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Categorie`
+--
+
+LOCK TABLES `Categorie` WRITE;
+/*!40000 ALTER TABLE `Categorie` DISABLE KEYS */;
+INSERT INTO `Categorie` VALUES
+('Elettronica','Informatica','Videogiochi');
+/*!40000 ALTER TABLE `Categorie` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -148,6 +182,15 @@ CREATE TABLE `Controfferte` (
   CONSTRAINT `Controfferte_ibfk_2` FOREIGN KEY (`Oggetto`) REFERENCES `Oggetti` (`Codice`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Controfferte`
+--
+
+LOCK TABLES `Controfferte` WRITE;
+/*!40000 ALTER TABLE `Controfferte` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Controfferte` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -206,6 +249,17 @@ CREATE TABLE `Offerte` (
   CONSTRAINT `Offerte_ibfk_2` FOREIGN KEY (`Oggetto`) REFERENCES `Oggetti` (`Codice`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Offerte`
+--
+
+LOCK TABLES `Offerte` WRITE;
+/*!40000 ALTER TABLE `Offerte` DISABLE KEYS */;
+INSERT INTO `Offerte` VALUES
+(20.3,'ee4881e','2023-02-15 15:08:35','VLLGLN99T02H501N');
+/*!40000 ALTER TABLE `Offerte` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -289,6 +343,18 @@ CREATE TABLE `Oggetti` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Oggetti`
+--
+
+LOCK TABLES `Oggetti` WRITE;
+/*!40000 ALTER TABLE `Oggetti` DISABLE KEYS */;
+INSERT INTO `Oggetti` VALUES
+(10,30,'a7e0439','Dark Souls II',10,10,0,'Elettronica','2023-02-14 17:50:19','Informatica','Nuovo','Videogiochi'),
+(10,12.3,'ee4881e','Dark Souls I',10,10,1,'Elettronica','2023-02-18 16:34:00','Informatica','Nuovo','Videogiochi');
+/*!40000 ALTER TABLE `Oggetti` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Utenti`
 --
 
@@ -308,6 +374,17 @@ CREATE TABLE `Utenti` (
   CONSTRAINT `Utenti_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `Auth` (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Utenti`
+--
+
+LOCK TABLES `Utenti` WRITE;
+/*!40000 ALTER TABLE `Utenti` DISABLE KEYS */;
+INSERT INTO `Utenti` VALUES
+('VLLGLN99T02H501N','Rome','Vallone','1999-12-02','Via Felice Cicconetti 1','Giuliano','Iaio99');
+/*!40000 ALTER TABLE `Utenti` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -322,6 +399,322 @@ DELIMITER ;;
     	SIGNAL SQLSTATE "45001" set MESSAGE_TEXT = "[InputError] The CF inserted is not valid!";
     END IF;
 END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Dumping routines for database 'Aste_Online'
+--
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP FUNCTION IF EXISTS `MAX_OFFER` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` FUNCTION `MAX_OFFER`(`codice` CHAR(7)) RETURNS float unsigned
+    DETERMINISTIC
+BEGIN
+	DECLARE numero_offerte SMALLINT UNSIGNED;
+    DECLARE base_asta FLOAT UNSIGNED;
+    DECLARE offerta_massima FLOAT UNSIGNED;
+    
+	SELECT NumeroOfferte, BaseAsta, MAX(Offerte.Importo)
+    FROM Oggetti LEFT JOIN Offerte ON Oggetti.Codice = Offerte.Oggetto
+    WHERE Oggetti.Codice = codice INTO numero_offerte, base_asta, offerta_massima;
+
+	IF offerta_massima IS NULL THEN
+		return base_asta;
+	ELSE
+		return offerta_massima;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `auctions_in_progress_informations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `auctions_in_progress_informations`()
+BEGIN
+	SELECT
+`Codice`,
+`Stato`,
+`Lunghezza`,
+`Larghezza`,
+`Altezza`,
+`Descrizione`,
+`BaseAsta`,
+`ScadenzaAsta`,
+`PrimoLivello`,
+`SecondoLivello`,
+`TerzoLivello`,
+`OffertaMassima`,
+ `NumeroOfferte`
+    FROM Aste
+	WHERE `ScadenzaAsta` > CURRENT_TIMESTAMP()
+    ORDER BY(ScadenzaAsta);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `call_auction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `call_auction`(IN `stato` VARCHAR(32), IN `lunghezza` TINYINT UNSIGNED, IN `larghezza` TINYINT UNSIGNED, IN `altezza` TINYINT UNSIGNED, IN `descrizione` TEXT, IN `base_dasta` FLOAT UNSIGNED, IN `durata_asta` TINYINT, IN `primo_livello` VARCHAR(32), IN `secondo_livello` VARCHAR(32), IN `terzo_livello` VARCHAR(32))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLSTATE "45001"
+    BEGIN
+    	ROLLBACK;
+        RESIGNAL;
+    END;
+
+	IF durata_asta > 7 OR durata_asta < 1 THEN
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The duration of the asta must be between 1 and 7 days";
+    END IF;
+
+	INSERT INTO Oggetti VALUES (LEFT (UUID(),7), stato, lunghezza, larghezza, altezza, descrizione, base_dasta, DATE_ADD(NOW(), INTERVAL durata_asta DAY), 0, primo_livello, secondo_livello, terzo_livello);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `closed_auctions_informations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `closed_auctions_informations`()
+BEGIN
+	SELECT
+		`Codice`,
+        `Stato`,
+        `Lunghezza`,
+        `Larghezza`,
+        `Altezza`,
+        `Descrizione`,
+        `BaseAsta`,
+        `ScadenzaAsta`,
+        `PrimoLivello`,
+        `SecondoLivello`,
+        `TerzoLivello`,
+        `OffertaMassima`,
+		`NumeroOfferte`
+	FROM Aste
+    WHERE ScadenzaAsta<=NOW();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_category` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `insert_category`(IN `primo_livello` VARCHAR(32), IN `secondo_livello` VARCHAR(32), IN `terzo_livello` VARCHAR(32))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLSTATE '45001'
+    BEGIN
+    	ROLLBACK;
+        RESIGNAL;
+    END;
+	
+    INSERT INTO Categorie(PrimoLivello, SecondoLivello, TerzoLivello) VALUES (primo_livello, secondo_livello, terzo_livello);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `login` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `login`(IN var_username varchar(64), IN password varchar(64),  OUT var_role TINYINT(1), OUT var_cf CHAR(16))
+BEGIN
+	DECLARE user_role ENUM('amministratore', 'utente');
+    
+    SELECT `Ruolo`
+		FROM Auth
+		WHERE Auth.username = var_username AND Auth.Password = md5(password) INTO user_role;
+
+		SELECT CF
+		FROM Utenti
+		WHERE Username = var_username INTO var_cf;
+
+		-- See the corresponding enum in the client
+		IF user_role = 'amministratore' THEN
+			SET var_role = 1;
+		ELSEIF user_role = 'utente' THEN
+			SET var_role = 2;
+		ELSE
+			SET var_role = 3;
+		END if;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `make_offer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `make_offer`(IN `utente` CHAR(16), IN `importo` FLOAT UNSIGNED, IN `oggetto` CHAR(7))
+BEGIN
+	DECLARE importo_controfferta FLOAT UNSIGNED;
+	DECLARE controfferente CHAR(16);
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLSTATE '45001', SQLSTATE '45002'
+    begin
+	rollback;
+        resignal;
+	end;
+	set transaction isolation level read committed;
+    start transaction;
+
+		SELECT Importo, Utente
+        FROM Controfferte
+        WHERE Oggetto=oggetto INTO importo_controfferta, controfferente;
+        
+        IF importo_controfferta >= importo AND importo_controfferta IS NOT NULL THEN
+			INSERT INTO Offerte VALUES (importo+0.50, oggetto, controfferente, NOW());
+            SIGNAL SQLSTATE '45002' set message_text = "[OfferError] There is a counteroffer higher then your offer!";
+		ELSE
+			INSERT INTO Offerte VALUES(importo, oggetto, utente, NOW());
+		END IF;
+	commit;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `set_counteroffer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `set_counteroffer`(IN `importo` FLOAT, IN `utente` CHAR(16), IN `oggetto` CHAR(7))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLSTATE "45001", SQLSTATE "45002"
+    BEGIN
+    	ROLLBACK;
+    	RESIGNAL;
+    END;
+    
+	INSERT INTO Controfferte VALUES (importo, utente, oggetto);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `user_auctions_informations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `user_auctions_informations`(IN `var_utente` CHAR(16))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+    	ROLLBACK;
+        RESIGNAL;
+    END;
+    
+	SELECT `Codice`, `Descrizione`, ScadenzaAsta, NumeroOfferte, OffertaMassima
+    FROM Aste
+    WHERE `ScadenzaAsta` > CURRENT_TIMESTAMP() AND Partecipante=var_utente
+ORDER BY(ScadenzaAsta);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `user_registration` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`giuliano`@`%` PROCEDURE `user_registration`(IN `username` VARCHAR(32), IN `password` VARCHAR(32), IN `cf` CHAR(16), IN `nome` VARCHAR(32), IN `cognome` VARCHAR(32), IN `indirizzo` VARCHAR(64), IN `data_nascita` DATE, IN `citta_nascita` VARCHAR(32), IN `numero_carta` CHAR(19), IN `cvv` SMALLINT, IN `data_scadenza` DATE)
+BEGIN
+	declare exit handler for sqlexception, SQLSTATE "45001"
+    begin
+		rollback;
+        resignal;
+	end;
+	set transaction isolation level read committed; -- Evita la lettura sporca di un username inserito di un altro utente la cui registrazione non è andata a buon fine
+    start transaction;
+		INSERT INTO Auth VALUES(username, md5(password), 'user');
+		INSERT INTO Utenti VALUES(cf, nome, cognome, indirizzo, data_nascita, citta_nascita, username);
+		INSERT INTO CarteCredito VALUES (numero_carta, cf, cvv, data_scadenza);
+	commit;
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -355,4 +748,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-23 21:14:42
+-- Dump completed on 2023-02-23 21:23:22
