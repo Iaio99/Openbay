@@ -278,6 +278,7 @@ CREATE TABLE `Oggetti` (
   `TerzoLivello` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`Codice`),
   KEY `Oggetti_ibfk_1` (`PrimoLivello`,`SecondoLivello`,`TerzoLivello`),
+  KEY `ScadenzaAsta` (`ScadenzaAsta`),
   CONSTRAINT `Oggetti_ibfk_1` FOREIGN KEY (`PrimoLivello`, `SecondoLivello`, `TerzoLivello`) REFERENCES `Categorie` (`PrimoLivello`, `SecondoLivello`, `TerzoLivello`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -349,4 +350,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-21  1:49:15
+-- Dump completed on 2023-02-23 12:06:08
