@@ -81,8 +81,8 @@ CREATE TABLE `CarteCredito` (
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_number` BEFORE INSERT ON `CarteCredito` FOR EACH ROW BEGIN
-	IF NOT VALIDATE_CARD_NUMBER(NEW.Numero) THEN
-    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "Invalid input!";
+	IF NOT New.Numero REGEXP "^([0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4})"  THEN
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The credit must be kind of XXXX-XXXX-XXXX-XXXX where X is a number!";
     END IF;
 END */;;
 DELIMITER ;
@@ -210,7 +210,7 @@ CREATE TABLE `Offerte` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_import` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_offer` BEFORE INSERT ON `Offerte` FOR EACH ROW BEGIN
 	DECLARE offerta_max FLOAT UNSIGNED;
 	DECLARE increment FLOAT UNSIGNED;
     DECLARE max_offerer CHAR(16);
@@ -313,8 +313,8 @@ CREATE TABLE `Utenti` (
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_cf` BEFORE INSERT ON `Utenti` FOR EACH ROW BEGIN
-	IF NOT validate_cf(NEW.CF) THEN
-    	SIGNAL SQLSTATE "45001" set MESSAGE_TEXT = "Invalid input!";
+	IF new.cf REGEXP '^(([A-Z]|[a-z]){6}[0-9]{2}([A-Z]|[a-z])[0-9]{2}([A-Z]|[a-z])[0-9]{3}([A-Z]|[a-z]))' THEN
+    	SIGNAL SQLSTATE "45001" set MESSAGE_TEXT = "[InputError] The CF inserted is not valid!";
     END IF;
 END */;;
 DELIMITER ;
@@ -350,4 +350,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-23 13:47:22
+-- Dump completed on 2023-02-23 15:25:37
