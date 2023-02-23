@@ -80,9 +80,14 @@ CREATE TABLE `CarteCredito` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_number` BEFORE INSERT ON `CarteCredito` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_card` BEFORE INSERT ON `CarteCredito` FOR EACH ROW BEGIN
 	IF NOT New.Numero REGEXP "^([0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4})"  THEN
     	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The credit must be kind of XXXX-XXXX-XXXX-XXXX where X is a number!";
+    END IF;
+    
+    IF New.CVV > 10000 OR NEW.CVV < 100 THEN 
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = 
+        "[InputError] The CVV must a number of digits between 3 and 4!";
     END IF;
 END */;;
 DELIMITER ;
@@ -116,7 +121,7 @@ CREATE TABLE `Categorie` (
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_level_names` BEFORE INSERT ON `Categorie` FOR EACH ROW BEGIN
 	IF NEW.`PrimoLivello` = NEW.`SecondoLivello` OR NEW.`PrimoLivello` = NEW.`TerzoLivello` OR NEW.`SecondoLivello` = NEW.`TerzoLivello` THEN
-		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid input! The levels's names must be all different!";
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "[InputError] The levels's names must be all different!";
 	END IF;
 END */;;
 DELIMITER ;
@@ -152,7 +157,7 @@ CREATE TABLE `Controfferte` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_controffer` BEFORE INSERT ON `Controfferte` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`giuliano`@`%`*/ /*!50003 TRIGGER `assert_counteroffer` BEFORE INSERT ON `Controfferte` FOR EACH ROW BEGIN
 	DECLARE increment FLOAT UNSIGNED;
     DECLARE importo_controfferta FLOAT UNSIGNED;
     DECLARE max_offerer CHAR(16);
@@ -166,7 +171,7 @@ DELIMITER ;;
     SET importo_controfferta = (SELECT Importo FROM Controfferte WHERE Oggetto = New.Oggetto);
     
     IF Importo_controfferta <= MAX_OFFER(New.Oggetto) THEN
-    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The controffer must be higher then max offer";
+    	SIGNAL SQLSTATE "45001" SET MESSAGE_TEXT = "[InputError] The counteroffer must be higher then max offer";
     END IF;
     
     SET increment = CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5;
@@ -219,11 +224,11 @@ DELIMITER ;;
     SET increment = (CAST(((NEW.Importo-offerta_max)) AS DECIMAL)%0.5);
 
     IF new.Importo < offerta_max THEN
-		SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = "Your offer is too low!";
+		SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = "[InputError] Your offer is too low!";
     END IF;
 
 	IF increment != 0.0 THEN
-		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Invalid Input!: The increment must be a multiple of 0.50€";
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "[InputError] The increment must be a multiple of 0.50€";
 	END IF;
     
     SET max_offerer = (SELECT Utente FROM Offerte Where Oggetto = New.Oggetto GROUP BY Oggetto HAVING MAX_OFFER(Oggetto));
@@ -350,4 +355,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-23 15:25:37
+-- Dump completed on 2023-02-23 17:34:15
