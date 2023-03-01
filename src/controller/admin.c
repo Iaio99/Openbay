@@ -25,7 +25,7 @@ static bool add_new_object(void)
 	get_input("\033[0;31mFirst level of category:\033[0;0m ", LEVEL_LEN, object.category.first_level, false);
 	get_input("\033[0;31mSecond level of category:\033[0;0m ", LEVEL_LEN, object.category.second_level, false);
 	get_input("\033[0;31mThird level of category:\033[0;0m ", LEVEL_LEN, object.category.third_level, false);
-	get_number("\033[0;31mDuration of auction [1-7]\033:[0;0m ", "%cu", &duration);
+	get_number("\033[0;31mDuration of auction [1-7]:\033[0;0m ", "%cu", &duration);
 
 	duration -= 48;
 
